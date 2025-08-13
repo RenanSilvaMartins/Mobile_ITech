@@ -4,6 +4,8 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
+import '../widgets/social_login_button.dart';
+import '../widgets/logo_widgets.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -114,6 +116,35 @@ class LoginScreen extends StatelessWidget {
                           text: AppStrings.loginButton,
                           onPressed: () {
                             // Implementar lógica de login
+                          },
+                        ),
+                        SizedBox(height: 30),
+                        Row(
+                          children: [
+                            Expanded(child: Divider(color: Colors.grey[300])),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                AppStrings.orContinueWith,
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                            ),
+                            Expanded(child: Divider(color: Colors.grey[300])),
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        SocialLoginButton(
+                          text: AppStrings.continueWithGoogle,
+                          logo: GoogleLogo(size: 20),
+                          onPressed: () {
+                            // Implementar login com Google
+                          },
+                        ),
+                        SocialLoginButton(
+                          text: AppStrings.continueWithMicrosoft,
+                          logo: MicrosoftLogo(size: 24),
+                          onPressed: () {
+                            // Implementar login com Microsoft
                           },
                         ),
                       ],

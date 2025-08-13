@@ -13,4 +13,7 @@ class AppStrings {
   static const String backToLogin = 'Voltar ao Login';
   static const String loginButton = 'Login';
   static const String signUpButton = 'Cadastrar';
+  static const String continueWithGoogle = 'Continuar com Google';
+  static const String continueWithMicrosoft = 'Continuar com Microsoft';
+  static const String orContinueWith = 'Ou continue com';
 }
