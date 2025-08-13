@@ -28,6 +28,5 @@ flutter:
   uses-material-design: true
 
   # A seção de assets também fica aqui, com a indentação correta.
-  imagens:
-    - imagens/logo_itech.png
-    
+  assets:
+    - assets/imagens/

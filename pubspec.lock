@@ -151,10 +151,10 @@ packages:
     dependency: "direct main"
     description:
       name: simple_animations
-      sha256: "2f4817d7e56a8ae34f1666ba9906aed394a48c7e1568d0fcd63efefb95142dd5"
+      sha256: "6c0f1d53d351a2187da979cc6883322eb9e76f1147c1aecc1937c498eaa9abff"
       url: "http://pub.dartlang.org"
     source: hosted
-    version: "5.2.0"
+    version: "5.1.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -225,5 +225,5 @@ packages:
     source: hosted
     version: "15.0.0"
 sdks:
-  dart: ">=3.7.2 <4.0.0"
+  dart: ">=3.7.0-0 <4.0.0"
   flutter: ">=3.18.0-18.0.pre.54"
