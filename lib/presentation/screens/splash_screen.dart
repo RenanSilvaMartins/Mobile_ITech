@@ -24,13 +24,28 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: Image.asset(
-          'assets/imagens/logo_itech.png',
-          fit: BoxFit.cover,
-        ),
+      body: Stack(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: Image.asset(
+              'assets/imagens/logo_itech.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Positioned(
+            bottom: 100,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                strokeWidth: 3,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
