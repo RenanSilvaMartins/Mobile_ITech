@@ -30,4 +30,3 @@ flutter:
   # A seção de assets também fica aqui, com a indentação correta.
   assets:
     - assets/imagens/
-    - assets/imagens/social_icons/

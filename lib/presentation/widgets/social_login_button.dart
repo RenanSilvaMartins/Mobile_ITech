@@ -8,20 +8,20 @@ class SocialLoginButton extends StatelessWidget {
   final Color textColor;
 
   const SocialLoginButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.logo,
     required this.onPressed,
     this.backgroundColor = Colors.white,
     this.textColor = Colors.black87,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       height: 50,
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: const EdgeInsets.symmetric(vertical: 5),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -37,10 +37,10 @@ class SocialLoginButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             logo,
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             Text(
               text,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),

@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 class GoogleLogo extends StatelessWidget {
   final double size;
   
-  const GoogleLogo({Key? key, this.size = 24}) : super(key: key);
+  const GoogleLogo({super.key, this.size = 24});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: size,
       height: size,
       child: CustomPaint(
@@ -20,11 +20,11 @@ class GoogleLogo extends StatelessWidget {
 class MicrosoftLogo extends StatelessWidget {
   final double size;
   
-  const MicrosoftLogo({Key? key, this.size = 24}) : super(key: key);
+  const MicrosoftLogo({super.key, this.size = 24});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: size,
       height: size,
       child: CustomPaint(
@@ -38,7 +38,7 @@ class GoogleLogoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Color(0xFF6A1B9A)
+      ..color = const Color(0xFF6A1B9A)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0
       ..strokeCap = StrokeCap.round;
@@ -57,7 +57,7 @@ class GoogleLogoPainter extends CustomPainter {
     
     // Barra horizontal interna do G
     final linePaint = Paint()
-      ..color = Color(0xFF6A1B9A)
+      ..color = const Color(0xFF6A1B9A)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0
       ..strokeCap = StrokeCap.round;
@@ -84,7 +84,7 @@ class MicrosoftLogoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Color(0xFF6A1B9A)
+      ..color = const Color(0xFF6A1B9A)
       ..style = PaintingStyle.fill;
 
     final center = Offset(size.width / 2, size.height / 2);
