@@ -4,21 +4,20 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.4.3 <4.0.0' # É uma boa prática usar uma faixa de versão
+  sdk: '>=3.4.3 <4.0.0'
 
-# Aqui ficam apenas os pacotes que seu app precisa
 dependencies:
   flutter:
     sdk: flutter
   
-  simple_animations: ^5.0.2 # Recomendo usar o circunflexo para pegar atualizações menores
+  simple_animations: ^5.0.2
   font_awesome_flutter: ^10.7.0
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^6.0.0
 
 # Esta é a seção de configuração do Flutter.
 # Todas as configurações específicas do Flutter vêm aqui.

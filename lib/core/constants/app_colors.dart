@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const Color primaryPurple = Color(0xFF5b3a7e);
-  static const Color darkPurple = Color(0xFF2c0e4d);
-  static const Color lightPurple = Color(0xFFA626A6);
+  static const Color primaryPurple = Color(0xFF6A1B9A);
+  static const Color darkPurple = Color(0xFF4A148C);
+  static const Color lightPurple = Color(0xFF8E24AA);
   
-  static const LinearGradient loginGradient = LinearGradient(
-    begin: Alignment.topCenter,
+  static const LinearGradient modernGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
     colors: [
       Color(0xFF6A1B9A),
-      Color(0xFFBA68C8),
+      Color(0xFF4A148C),
     ],
   );
   
-  static const RadialGradient splashGradient = RadialGradient(
-    center: Alignment.center,
-    radius: 0.7,
+  static const LinearGradient subtleGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
     colors: [
-      Color(0xFF5b3a7e),
-      Color(0xFF2c0e4d),
+      Color(0xFFF8FAFC),
+      Color(0xFFF1F5F9),
     ],
   );
+  
+  static const Color cardBackground = Color(0xFFFFFFFF);
+  static const Color shadowColor = Color(0x1A000000);
+  static const Color accentPurple = Color(0xFF9333EA);
 }
