@@ -3,6 +3,9 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
+import '../../data/models/user_model.dart';
+import '../../data/services/user_service.dart';
+import 'home_screen.dart';
 
 class CadastroScreen extends StatefulWidget {
   const CadastroScreen({Key? key}) : super(key: key);
@@ -292,12 +295,25 @@ class _CadastroScreenState extends State<CadastroScreen> {
                         if (_isValidName(_nameController.text) && 
                             _isValidEmail(_emailController.text) && 
                             _isValidPassword(_passwordController.text)) {
+                          // Salvar usuário cadastrado
+                          UserService().setCurrentUser(UserModel(
+                            id: '1',
+                            name: _nameController.text,
+                            email: _emailController.text,
+                          ));
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('Cadastro realizado com sucesso!'),
                               backgroundColor: Colors.green,
                             ),
                           );
+                          // Navegar para home após cadastro
+                          Future.delayed(Duration(seconds: 1), () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => HomeScreen()),
+                            );
+                          });
                         }
                       },
                     ),

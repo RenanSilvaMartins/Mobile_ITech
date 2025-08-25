@@ -102,10 +102,11 @@ class HomeContent extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ProfileScreen()),
-                            );
+                            // Navegar para aba do perfil ao invés de push
+                            final homeState = context.findAncestorStateOfType<_HomeScreenState>();
+                            homeState?.setState(() {
+                              homeState._currentIndex = 3;
+                            });
                           },
                           child: CircleAvatar(
                             radius: 25,

@@ -66,22 +66,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           border: InputBorder.none,
           suffixIcon: widget.isPassword && widget.onToggleVisibility != null
-              ? Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (widget.showValidation && widget.controller != null)
-                      Icon(
-                        widget.isValid ? Icons.check_circle : Icons.error,
-                        color: widget.isValid ? Colors.green : Colors.red,
-                      ),
-                    IconButton(
-                      icon: Icon(
-                        widget.obscureText ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.grey,
-                      ),
-                      onPressed: widget.onToggleVisibility,
-                    ),
-                  ],
+              ? IconButton(
+                  icon: Icon(
+                    widget.obscureText ? Icons.visibility : Icons.visibility_off,
+                    color: Colors.grey,
+                  ),
+                  onPressed: widget.onToggleVisibility,
                 )
               : widget.showValidation && widget.controller != null
                   ? Icon(

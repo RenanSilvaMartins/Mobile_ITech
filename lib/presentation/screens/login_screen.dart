@@ -8,6 +8,8 @@ import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/social_login_button.dart';
 import '../widgets/logo_widgets.dart';
+import '../../data/models/user_model.dart';
+import '../../data/services/user_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -318,6 +320,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 _showValidation = true;
                               });
                               if (_isValidEmail(_emailController.text) && _isValidPassword(_passwordController.text)) {
+                                // Salvar usuário logado
+                                UserService().setCurrentUser(UserModel(
+                                  id: '1',
+                                  name: _emailController.text.split('@')[0],
+                                  email: _emailController.text,
+                                ));
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(builder: (context) => HomeScreen()),
