@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../data/services/user_service.dart';
+import 'login_screen.dart';
+import 'service_history_screen.dart';
+import 'notifications_screen.dart';
+import 'help_screen.dart';
+import 'settings_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -7,10 +13,18 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final _nameController = TextEditingController(text: 'João Cliente');
-  final _emailController = TextEditingController(text: 'joao@email.com');
+  late final TextEditingController _nameController;
+  late final TextEditingController _emailController;
   final _phoneController = TextEditingController(text: '(11) 99999-9999');
   final _addressController = TextEditingController(text: 'Rua das Flores, 123');
+
+  @override
+  void initState() {
+    super.initState();
+    final user = UserService().currentUser;
+    _nameController = TextEditingController(text: user?.name ?? 'Cliente');
+    _emailController = TextEditingController(text: user?.email ?? 'email@exemplo.com');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +58,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => SettingsScreen()),
+                            );
+                          },
                           icon: Icon(Icons.settings, color: Colors.white),
                         ),
                       ],
@@ -182,19 +201,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: Icons.history,
                       title: 'Histórico de Serviços',
                       subtitle: 'Ver todos os serviços solicitados',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ServiceHistoryScreen()),
+                        );
+                      },
                     ),
                     _MenuOption(
                       icon: Icons.notifications,
                       title: 'Notificações',
                       subtitle: 'Configurar alertas e avisos',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => NotificationsScreen()),
+                        );
+                      },
                     ),
                     _MenuOption(
                       icon: Icons.help,
                       title: 'Ajuda e Suporte',
                       subtitle: 'Central de ajuda e FAQ',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HelpScreen()),
+                        );
+                      },
                     ),
                     _MenuOption(
                       icon: Icons.logout,
@@ -213,7 +247,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.popUntil(context, (route) => route.isFirst);
+                                  UserService().logout();
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                                    (route) => false,
+                                  );
                                 },
                                 child: Text('Sair'),
                               ),
@@ -231,6 +270,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _addressController.dispose();
+    super.dispose();
   }
 }
 

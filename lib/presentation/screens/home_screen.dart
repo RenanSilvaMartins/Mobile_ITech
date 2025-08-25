@@ -3,6 +3,7 @@ import '../../core/constants/app_colors.dart';
 import 'technicians_screen.dart';
 import 'profile_screen.dart';
 import 'services_screen.dart';
+import '../../data/services/user_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -83,7 +84,7 @@ class HomeContent extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Olá, Cliente!',
+                              'Olá, ${UserService().currentUser?.name ?? 'Cliente'}!',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 24,
@@ -99,10 +100,18 @@ class HomeContent extends StatelessWidget {
                             ),
                           ],
                         ),
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.white.withOpacity(0.2),
-                          child: Icon(Icons.person, color: Colors.white, size: 30),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ProfileScreen()),
+                            );
+                          },
+                          child: CircleAvatar(
+                            radius: 25,
+                            backgroundColor: Colors.white.withOpacity(0.2),
+                            child: Icon(Icons.person, color: Colors.white, size: 30),
+                          ),
                         ),
                       ],
                     ),
