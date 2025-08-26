@@ -3,6 +3,7 @@ import '../../core/constants/app_colors.dart';
 import 'technicians_screen.dart';
 import 'profile_screen.dart';
 import 'services_screen.dart';
+import 'service_history_screen.dart';
 import '../../data/services/user_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,10 +26,30 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex],
+      body: AnimatedSwitcher(
+        duration: Duration(milliseconds: 300),
+        transitionBuilder: (child, animation) {
+          return FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: Offset(0.1, 0),
+                end: Offset.zero,
+              ).animate(CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeInOut,
+              )),
+              child: child,
+            ),
+          );
+        },
+        child: _screens[_currentIndex],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
+        onTap: (index) {
+          setState(() => _currentIndex = index);
+        },
         type: BottomNavigationBarType.fixed,
         selectedItemColor: AppColors.primaryPurple,
         unselectedItemColor: Colors.grey,
@@ -55,7 +76,29 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class HomeContent extends StatelessWidget {
+class HomeContent extends StatefulWidget {
+  @override
+  State<HomeContent> createState() => _HomeContentState();
+}
+
+class _HomeContentState extends State<HomeContent> {
+  final TextEditingController _searchController = TextEditingController();
+  
+  void _navigateToServices(String category) {
+    final homeState = context.findAncestorStateOfType<_HomeScreenState>();
+    if (homeState != null) {
+      homeState.setState(() {
+        homeState._currentIndex = 2;
+      });
+    }
+  }
+  
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,24 +160,32 @@ class HomeContent extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 24),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.search, color: Colors.white),
-                          SizedBox(width: 12),
-                          Text(
-                            'Buscar serviços...',
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
-                              fontSize: 16,
+                    GestureDetector(
+                      onTap: () {
+                        final homeState = context.findAncestorStateOfType<_HomeScreenState>();
+                        homeState?.setState(() {
+                          homeState._currentIndex = 2;
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.search, color: Colors.white),
+                            SizedBox(width: 12),
+                            Text(
+                              'Buscar serviços...',
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 16,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -159,20 +210,32 @@ class HomeContent extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: _QuickActionCard(
-                            icon: Icons.phone_android,
-                            title: 'Celular',
-                            subtitle: 'Reparo de smartphones',
-                            color: Colors.blue,
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 200),
+                            child: GestureDetector(
+                              onTap: () => _navigateToServices('Smartphone'),
+                              child: _QuickActionCard(
+                                icon: Icons.phone_android,
+                                title: 'Celular',
+                                subtitle: 'Reparo de smartphones',
+                                color: Colors.blue,
+                              ),
+                            ),
                           ),
                         ),
                         SizedBox(width: 16),
                         Expanded(
-                          child: _QuickActionCard(
-                            icon: Icons.laptop,
-                            title: 'Notebook',
-                            subtitle: 'Manutenção de laptops',
-                            color: Colors.green,
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 200),
+                            child: GestureDetector(
+                              onTap: () => _navigateToServices('Notebook'),
+                              child: _QuickActionCard(
+                                icon: Icons.laptop,
+                                title: 'Notebook',
+                                subtitle: 'Manutenção de laptops',
+                                color: Colors.green,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -181,20 +244,32 @@ class HomeContent extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: _QuickActionCard(
-                            icon: Icons.desktop_windows,
-                            title: 'Desktop',
-                            subtitle: 'Reparo de PCs',
-                            color: Colors.orange,
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 200),
+                            child: GestureDetector(
+                              onTap: () => _navigateToServices('Desktop'),
+                              child: _QuickActionCard(
+                                icon: Icons.desktop_windows,
+                                title: 'Desktop',
+                                subtitle: 'Reparo de PCs',
+                                color: Colors.orange,
+                              ),
+                            ),
                           ),
                         ),
                         SizedBox(width: 16),
                         Expanded(
-                          child: _QuickActionCard(
-                            icon: Icons.tablet,
-                            title: 'Tablet',
-                            subtitle: 'Assistência tablets',
-                            color: Colors.purple,
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 200),
+                            child: GestureDetector(
+                              onTap: () => _navigateToServices('Geral'),
+                              child: _QuickActionCard(
+                                icon: Icons.tablet,
+                                title: 'Tablet',
+                                subtitle: 'Assistência tablets',
+                                color: Colors.purple,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -221,7 +296,26 @@ class HomeContent extends StatelessWidget {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) => ServiceHistoryScreen(),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  return SlideTransition(
+                                    position: Tween<Offset>(
+                                      begin: Offset(1.0, 0.0),
+                                      end: Offset.zero,
+                                    ).animate(CurvedAnimation(
+                                      parent: animation,
+                                      curve: Curves.easeInOut,
+                                    )),
+                                    child: child,
+                                  );
+                                },
+                                transitionDuration: Duration(milliseconds: 300),
+                              ),
+                            );
+                          },
                           child: Text(
                             'Ver todos',
                             style: TextStyle(color: AppColors.primaryPurple),
@@ -255,7 +349,7 @@ class HomeContent extends StatelessWidget {
   }
 }
 
-class _QuickActionCard extends StatelessWidget {
+class _QuickActionCard extends StatefulWidget {
   final IconData icon;
   final String title;
   final String subtitle;
@@ -269,54 +363,109 @@ class _QuickActionCard extends StatelessWidget {
   });
 
   @override
+  State<_QuickActionCard> createState() => _QuickActionCardState();
+}
+
+class _QuickActionCardState extends State<_QuickActionCard> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  bool _isPressed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: Duration(milliseconds: 150),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+    return GestureDetector(
+      onTapDown: (_) {
+        setState(() => _isPressed = true);
+        _animationController.forward();
+      },
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        _animationController.reverse();
+      },
+      onTapCancel: () {
+        setState(() => _isPressed = false);
+        _animationController.reverse();
+      },
+      child: AnimatedBuilder(
+        animation: _scaleAnimation,
+        builder: (context, child) {
+          return Transform.scale(
+            scale: _scaleAnimation.value,
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(_isPressed ? 0.1 : 0.05),
+                    blurRadius: _isPressed ? 15 : 10,
+                    offset: Offset(0, _isPressed ? 8 : 5),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: widget.color.withOpacity(_isPressed ? 0.2 : 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(widget.icon, color: widget.color, size: 24),
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    widget.title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                  Text(
+                    widget.subtitle,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            child: Icon(icon, color: color, size: 24),
-          ),
-          SizedBox(height: 12),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[800],
-            ),
-          ),
-          Text(
-            subtitle,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 }
 
-class _ServiceCard extends StatelessWidget {
+class _ServiceCard extends StatefulWidget {
   final String title;
   final String technician;
   final String status;
@@ -332,77 +481,153 @@ class _ServiceCard extends StatelessWidget {
   });
 
   @override
+  State<_ServiceCard> createState() => _ServiceCardState();
+}
+
+class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  bool _isHovered = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.02,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 12),
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: Offset(0, 2),
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => ServiceHistoryScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: Offset(1.0, 0.0),
+                  end: Offset.zero,
+                ).animate(CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeInOut,
+                )),
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 300),
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.primaryPurple.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(Icons.build, color: AppColors.primaryPurple),
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[800],
+        );
+      },
+      onTapDown: (_) {
+        setState(() => _isHovered = true);
+        _animationController.forward();
+      },
+      onTapUp: (_) {
+        setState(() => _isHovered = false);
+        _animationController.reverse();
+      },
+      onTapCancel: () {
+        setState(() => _isHovered = false);
+        _animationController.reverse();
+      },
+      child: AnimatedBuilder(
+        animation: _scaleAnimation,
+        builder: (context, child) {
+          return Transform.scale(
+            scale: _scaleAnimation.value,
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              margin: EdgeInsets.only(bottom: 12),
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(_isHovered ? 0.1 : 0.05),
+                    blurRadius: _isHovered ? 15 : 10,
+                    offset: Offset(0, _isHovered ? 5 : 2),
                   ),
-                ),
-                Text(
-                  'Técnico: $technician',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
+                ],
+              ),
+              child: Row(
+                children: [
+                  AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryPurple.withOpacity(_isHovered ? 0.2 : 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(Icons.build, color: AppColors.primaryPurple),
                   ),
-                ),
-                Text(
-                  date,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[500],
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.title,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                        Text(
+                          'Técnico: ${widget.technician}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        Text(
+                          widget.date,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              status,
-              style: TextStyle(
-                color: statusColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
+                  AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: widget.statusColor.withOpacity(_isHovered ? 0.2 : 0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      widget.status,
+                      style: TextStyle(
+                        color: widget.statusColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

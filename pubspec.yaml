@@ -13,6 +13,10 @@ dependencies:
   simple_animations: ^5.0.2
   font_awesome_flutter: ^10.7.0
   cupertino_icons: ^1.0.8
+  google_maps_flutter: ^2.5.0
+  geolocator: ^10.1.0
+  geocoding: ^2.1.1
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:

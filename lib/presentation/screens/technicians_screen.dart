@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 
-class TechniciansScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> technicians = [
+class TechniciansScreen extends StatefulWidget {
+  const TechniciansScreen({Key? key}) : super(key: key);
+  
+  @override
+  State<TechniciansScreen> createState() => _TechniciansScreenState();
+}
+
+class _TechniciansScreenState extends State<TechniciansScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _selectedFilter = 'Todos';
+  String _searchQuery = '';
+  
+  final List<Map<String, dynamic>> _allTechnicians = [
     {
       'name': 'João Silva',
       'specialty': 'Smartphones e Tablets',
       'rating': 4.8,
       'experience': '5 anos',
       'available': true,
-      'image': Icons.person,
+      'image': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
     },
     {
       'name': 'Maria Santos',
@@ -17,7 +28,7 @@ class TechniciansScreen extends StatelessWidget {
       'rating': 4.9,
       'experience': '7 anos',
       'available': true,
-      'image': Icons.person,
+      'image': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
     },
     {
       'name': 'Carlos Oliveira',
@@ -25,7 +36,7 @@ class TechniciansScreen extends StatelessWidget {
       'rating': 4.7,
       'experience': '3 anos',
       'available': false,
-      'image': Icons.person,
+      'image': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
     },
     {
       'name': 'Ana Costa',
@@ -33,9 +44,38 @@ class TechniciansScreen extends StatelessWidget {
       'rating': 4.9,
       'experience': '4 anos',
       'available': true,
-      'image': Icons.person,
+      'image': 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
     },
   ];
+
+  List<Map<String, dynamic>> get _filteredTechnicians {
+    List<Map<String, dynamic>> filtered = _allTechnicians;
+    
+    if (_selectedFilter != 'Todos') {
+      if (_selectedFilter == 'Disponíveis') {
+        filtered = filtered.where((tech) => tech['available'] == true).toList();
+      } else {
+        filtered = filtered.where((tech) => 
+          tech['specialty'].toLowerCase().contains(_selectedFilter.toLowerCase())
+        ).toList();
+      }
+    }
+    
+    if (_searchQuery.isNotEmpty) {
+      filtered = filtered.where((tech) => 
+        tech['name'].toLowerCase().contains(_searchQuery.toLowerCase()) ||
+        tech['specialty'].toLowerCase().contains(_searchQuery.toLowerCase())
+      ).toList();
+    }
+    
+    return filtered;
+  }
+  
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +117,12 @@ class TechniciansScreen extends StatelessWidget {
                   SizedBox(width: 12),
                   Expanded(
                     child: TextField(
+                      controller: _searchController,
+                      onChanged: (value) {
+                        setState(() {
+                          _searchQuery = value;
+                        });
+                      },
                       decoration: InputDecoration(
                         hintText: 'Buscar técnico...',
                         border: InputBorder.none,
@@ -92,20 +138,46 @@ class TechniciansScreen extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  _FilterChip('Todos', true),
-                  _FilterChip('Disponíveis', false),
-                  _FilterChip('Smartphones', false),
-                  _FilterChip('Notebooks', false),
+                  _FilterChip('Todos', _selectedFilter == 'Todos', (selected) {
+                    setState(() { _selectedFilter = 'Todos'; });
+                  }),
+                  _FilterChip('Disponíveis', _selectedFilter == 'Disponíveis', (selected) {
+                    setState(() { _selectedFilter = 'Disponíveis'; });
+                  }),
+                  _FilterChip('Smartphones', _selectedFilter == 'Smartphones', (selected) {
+                    setState(() { _selectedFilter = 'Smartphones'; });
+                  }),
+                  _FilterChip('Notebooks', _selectedFilter == 'Notebooks', (selected) {
+                    setState(() { _selectedFilter = 'Notebooks'; });
+                  }),
                 ],
               ),
             ),
             SizedBox(height: 16),
             // Technicians List
             Expanded(
-              child: ListView.builder(
-                itemCount: technicians.length,
-                itemBuilder: (context, index) {
-                  final tech = technicians[index];
+              child: _filteredTechnicians.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
+                          SizedBox(height: 16),
+                          Text(
+                            'Nenhum técnico encontrado',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.grey[600],
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: _filteredTechnicians.length,
+                      itemBuilder: (context, index) {
+                        final tech = _filteredTechnicians[index];
                   return _TechnicianCard(
                     name: tech['name'],
                     specialty: tech['specialty'],
@@ -127,8 +199,9 @@ class TechniciansScreen extends StatelessWidget {
 class _FilterChip extends StatelessWidget {
   final String label;
   final bool selected;
+  final Function(bool) onSelected;
 
-  const _FilterChip(this.label, this.selected);
+  const _FilterChip(this.label, this.selected, this.onSelected);
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +210,7 @@ class _FilterChip extends StatelessWidget {
       child: FilterChip(
         label: Text(label),
         selected: selected,
-        onSelected: (value) {},
+        onSelected: onSelected,
         selectedColor: AppColors.primaryPurple.withOpacity(0.2),
         checkmarkColor: AppColors.primaryPurple,
       ),
@@ -151,7 +224,7 @@ class _TechnicianCard extends StatelessWidget {
   final double rating;
   final String experience;
   final bool available;
-  final IconData image;
+  final String image;
 
   const _TechnicianCard({
     required this.name,
@@ -185,7 +258,9 @@ class _TechnicianCard extends StatelessWidget {
               CircleAvatar(
                 radius: 30,
                 backgroundColor: AppColors.primaryPurple.withOpacity(0.1),
-                child: Icon(image, size: 30, color: AppColors.primaryPurple),
+                backgroundImage: NetworkImage(image),
+                onBackgroundImageError: (exception, stackTrace) {},
+                child: Container(),
               ),
               if (available)
                 Positioned(
