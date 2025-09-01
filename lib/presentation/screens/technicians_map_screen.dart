@@ -297,29 +297,6 @@ class _TechniciansMapScreenState extends State<TechniciansMapScreen> {
               myLocationEnabled: true,
               myLocationButtonEnabled: false,
             ),
-    );
-  }
-}
-          ),
-        ],
-      ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: _currentPosition != null
-                    ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
-                    : LatLng(-23.5505, -46.6333), // São Paulo como padrão
-                zoom: 13,
-              ),
-              markers: _markers,
-              onMapCreated: (GoogleMapController controller) {
-                _mapController = controller;
-                _createMarkers();
-              },
-              myLocationEnabled: true,
-              myLocationButtonEnabled: false,
-            ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
