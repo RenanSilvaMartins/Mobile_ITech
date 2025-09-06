@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import 'technician_detail_screen.dart';
 
 class TechniciansScreen extends StatefulWidget {
   const TechniciansScreen({Key? key}) : super(key: key);
@@ -178,13 +179,23 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
                       itemCount: _filteredTechnicians.length,
                       itemBuilder: (context, index) {
                         final tech = _filteredTechnicians[index];
-                  return _TechnicianCard(
-                    name: tech['name'],
-                    specialty: tech['specialty'],
-                    rating: tech['rating'],
-                    experience: tech['experience'],
-                    available: tech['available'],
-                    image: tech['image'],
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TechnicianDetailScreen(technician: tech),
+                        ),
+                      );
+                    },
+                    child: _TechnicianCard(
+                      name: tech['name'],
+                      specialty: tech['specialty'],
+                      rating: tech['rating'],
+                      experience: tech['experience'],
+                      available: tech['available'],
+                      image: tech['image'],
+                    ),
                   );
                 },
               ),

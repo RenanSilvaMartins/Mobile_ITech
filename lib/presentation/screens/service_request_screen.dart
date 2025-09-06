@@ -334,21 +334,19 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
   }
 
   void _proceedToPayment() {
-    final serviceData = {
-      'service': selectedService,
-      'technician': widget.technician['name'],
-      'urgency': selectedUrgency,
-      'date': selectedDate,
-      'time': selectedTime,
-      'address': _addressController.text,
-      'description': _descriptionController.text,
-      'total': totalPrice,
-    };
-
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PaymentScreen(serviceData: serviceData),
+        builder: (context) => PaymentScreen(
+          technician: widget.technician,
+          service: selectedService!,
+          urgency: selectedUrgency!,
+          totalPrice: totalPrice,
+          date: selectedDate!,
+          time: selectedTime!,
+          address: _addressController.text,
+          description: _descriptionController.text,
+        ),
       ),
     );
   }

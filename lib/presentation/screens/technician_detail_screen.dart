@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import 'service_request_screen.dart';
+import 'technicians_map_screen.dart';
 
 class TechnicianDetailScreen extends StatefulWidget {
   final Map<String, dynamic> technician;
@@ -206,7 +207,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Ti
   }
 
   Widget _buildAboutTab() {
-    return Padding(
+    return SingleChildScrollView(
       padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,7 +241,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Ti
   }
 
   Widget _buildReviewsTab() {
-    return Padding(
+    return SingleChildScrollView(
       padding: EdgeInsets.all(16),
       child: Column(
         children: [
@@ -314,107 +315,99 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Ti
             ),
           ),
           SizedBox(height: 20),
-          Expanded(
-            child: ListView.builder(
-              itemCount: reviews.length,
-              itemBuilder: (context, index) {
-                final review = reviews[index];
-                return Container(
-                  margin: EdgeInsets.only(bottom: 16),
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: Offset(0, 2),
+          ...reviews.map((review) => Container(
+            margin: EdgeInsets.only(bottom: 16),
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: AppColors.primaryPurple.withOpacity(0.1),
+                      child: Text(
+                        review['name'][0],
+                        style: TextStyle(
+                          color: AppColors.primaryPurple,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundColor: AppColors.primaryPurple.withOpacity(0.1),
-                            child: Text(
-                              review['name'][0],
-                              style: TextStyle(
-                                color: AppColors.primaryPurple,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          Text(
+                            review['name'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
                             ),
                           ),
-                          SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  review['name'],
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                Text(
-                                  review['service'],
-                                  style: TextStyle(
-                                    color: Colors.grey[600],
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
+                          Text(
+                            review['service'],
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 14,
                             ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Row(
-                                children: List.generate(5, (i) {
-                                  return Icon(
-                                    i < review['rating'].floor() ? Icons.star : Icons.star_border,
-                                    color: Colors.amber,
-                                    size: 16,
-                                  );
-                                }),
-                              ),
-                              Text(
-                                review['date'],
-                                style: TextStyle(
-                                  color: Colors.grey[500],
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
                           ),
                         ],
                       ),
-                      SizedBox(height: 12),
-                      Text(
-                        review['comment'],
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[700],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Row(
+                          children: List.generate(5, (i) {
+                            return Icon(
+                              i < review['rating'].floor() ? Icons.star : Icons.star_border,
+                              color: Colors.amber,
+                              size: 16,
+                            );
+                          }),
                         ),
-                      ),
-                    ],
+                        Text(
+                          review['date'],
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 12),
+                Text(
+                  review['comment'],
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[700],
                   ),
-                );
-              },
+                ),
+              ],
             ),
-          ),
+          )),
         ],
       ),
     );
   }
 
   Widget _buildLocationTab() {
-    return Padding(
+    return SingleChildScrollView(
       padding: EdgeInsets.all(16),
       child: Column(
         children: [
@@ -460,6 +453,27 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Ti
             title: 'Tempo de Deslocamento',
             content: 'Média de 30-45 minutos para chegar ao local',
             icon: Icons.access_time,
+          ),
+          SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TechniciansMapScreen(),
+                ),
+              );
+            },
+            icon: Icon(Icons.map),
+            label: Text('Ver Mapa Completo'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryPurple,
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
           ),
         ],
       ),

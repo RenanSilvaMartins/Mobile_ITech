@@ -2,9 +2,26 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 
 class PaymentScreen extends StatefulWidget {
-  final Map<String, dynamic> serviceData;
+  final Map<String, dynamic> technician;
+  final String service;
+  final String urgency;
+  final double totalPrice;
+  final DateTime date;
+  final TimeOfDay time;
+  final String address;
+  final String description;
 
-  const PaymentScreen({Key? key, required this.serviceData}) : super(key: key);
+  const PaymentScreen({
+    Key? key,
+    required this.technician,
+    required this.service,
+    required this.urgency,
+    required this.totalPrice,
+    required this.date,
+    required this.time,
+    required this.address,
+    required this.description,
+  }) : super(key: key);
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -15,7 +32,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
   final TextEditingController _cardNumberController = TextEditingController();
   final TextEditingController _expiryController = TextEditingController();
   final TextEditingController _cvvController = TextEditingController();
-  final TextEditingController _cardHolderController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+
+  @override
+  void dispose() {
+    _cardNumberController.dispose();
+    _expiryController.dispose();
+    _cvvController.dispose();
+    _nameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +50,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
       appBar: AppBar(
         title: Text(
           'Pagamento',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         backgroundColor: AppColors.primaryPurple,
         foregroundColor: Colors.white,
@@ -37,7 +66,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           children: [
             // Resumo do pedido
             Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
@@ -54,41 +83,34 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 children: [
                   Text(
                     'Resumo do Pedido',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.grey[800],
+                    ),
                   ),
-                  SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Serviço:', style: TextStyle(color: Colors.grey[600])),
-                      Text(widget.serviceData['service'] ?? 'N/A'),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Técnico:', style: TextStyle(color: Colors.grey[600])),
-                      Text(widget.serviceData['technician'] ?? 'N/A'),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Urgência:', style: TextStyle(color: Colors.grey[600])),
-                      Text(widget.serviceData['urgency'] ?? 'N/A'),
-                    ],
-                  ),
+                  SizedBox(height: 16),
+                  _OrderItem('Técnico', widget.technician['name']),
+                  _OrderItem('Serviço', widget.service),
+                  _OrderItem('Urgência', widget.urgency),
+                  _OrderItem('Data', '${widget.date.day}/${widget.date.month}/${widget.date.year}'),
+                  _OrderItem('Horário', '${widget.time.hour.toString().padLeft(2, '0')}:${widget.time.minute.toString().padLeft(2, '0')}'),
                   Divider(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Total:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
                       Text(
-                        'R\$ ${widget.serviceData['total']?.toStringAsFixed(2) ?? '0.00'}',
+                        'Total',
                         style: TextStyle(
                           fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                      Text(
+                        'R\$ ${widget.totalPrice.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontSize: 20,
                           fontWeight: FontWeight.w700,
                           color: AppColors.primaryPurple,
                         ),
@@ -100,10 +122,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
             SizedBox(height: 24),
 
-            // Métodos de pagamento
+            // Método de pagamento
             Text(
               'Método de Pagamento',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: Colors.grey[800],
+              ),
             ),
             SizedBox(height: 12),
             _PaymentMethodOption(
@@ -136,14 +162,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
             if (selectedPaymentMethod == 'credit_card') ...[
               Text(
                 'Dados do Cartão',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.grey[800],
+                ),
               ),
               SizedBox(height: 12),
               TextField(
-                controller: _cardHolderController,
+                controller: _nameController,
                 decoration: InputDecoration(
-                  labelText: 'Nome no Cartão',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  labelText: 'Nome no cartão',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
                   filled: true,
                   fillColor: Colors.white,
                 ),
@@ -152,8 +185,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
               TextField(
                 controller: _cardNumberController,
                 decoration: InputDecoration(
-                  labelText: 'Número do Cartão',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  labelText: 'Número do cartão',
+                  hintText: '1234 5678 9012 3456',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
                   filled: true,
                   fillColor: Colors.white,
                 ),
@@ -166,8 +203,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     child: TextField(
                       controller: _expiryController,
                       decoration: InputDecoration(
-                        labelText: 'MM/AA',
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        labelText: 'Validade',
+                        hintText: 'MM/AA',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
                         filled: true,
                         fillColor: Colors.white,
                       ),
@@ -180,7 +221,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       controller: _cvvController,
                       decoration: InputDecoration(
                         labelText: 'CVV',
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        hintText: '123',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
                         filled: true,
                         fillColor: Colors.white,
                       ),
@@ -196,10 +241,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
             // QR Code PIX (se selecionado)
             if (selectedPaymentMethod == 'pix') ...[
               Container(
-                padding: EdgeInsets.all(24),
+                padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Column(
                   children: [
@@ -207,16 +259,32 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       width: 200,
                       height: 200,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]!),
+                        color: Colors.grey[200],
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(Icons.qr_code, size: 120, color: Colors.grey[400]),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.qr_code, size: 80, color: Colors.grey[600]),
+                          SizedBox(height: 8),
+                          Text(
+                            'QR Code PIX',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(height: 16),
                     Text(
-                      'Escaneie o QR Code com seu app de pagamento',
+                      'Escaneie o código com seu app do banco',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[700],
+                      ),
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey[600]),
                     ),
                   ],
                 ),
@@ -224,30 +292,45 @@ class _PaymentScreenState extends State<PaymentScreen> {
               SizedBox(height: 24),
             ],
 
-            // Informação sobre pagamento em dinheiro
+            // Informações sobre pagamento em dinheiro
             if (selectedPaymentMethod == 'cash') ...[
               Container(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.orange[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.orange[200]!),
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.orange.withOpacity(0.3),
+                  ),
                 ),
-                child: Row(
+                child: Column(
                   children: [
-                    Icon(Icons.info, color: Colors.orange[600]),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'O pagamento será realizado diretamente com o técnico no momento do atendimento.',
-                        style: TextStyle(color: Colors.orange[800]),
+                    Icon(Icons.info, color: Colors.orange, size: 32),
+                    SizedBox(height: 12),
+                    Text(
+                      'Pagamento em Dinheiro',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.orange[800],
                       ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'O pagamento será realizado diretamente com o técnico no momento do atendimento.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.orange[700],
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
               SizedBox(height: 24),
             ],
+
+            SizedBox(height: 100),
           ],
         ),
       ),
@@ -264,94 +347,80 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ],
         ),
         child: ElevatedButton(
-          onPressed: _processPayment,
+          onPressed: () => _processPayment(),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primaryPurple,
+            foregroundColor: Colors.white,
             padding: EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
           child: Text(
-            selectedPaymentMethod == 'cash' 
-                ? 'Confirmar Pedido' 
-                : 'Processar Pagamento',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
+            selectedPaymentMethod == 'cash' ? 'Confirmar Pedido' : 'Finalizar Pagamento',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
         ),
       ),
     );
   }
 
-  void _processPayment() {
-    // Validações básicas
-    if (selectedPaymentMethod == 'credit_card') {
-      if (_cardNumberController.text.isEmpty ||
-          _expiryController.text.isEmpty ||
-          _cvvController.text.isEmpty ||
-          _cardHolderController.text.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Preencha todos os dados do cartão')),
-        );
-        return;
-      }
-    }
-
+  void _processPayment() async {
     // Simular processamento
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Processando pagamento...'),
-          ],
-        ),
+      builder: (context) => Center(
+        child: CircularProgressIndicator(color: AppColors.primaryPurple),
       ),
     );
 
-    // Simular delay de processamento
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.of(context).pop(); // Fechar dialog de loading
-      
-      // Mostrar sucesso
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.green),
-              SizedBox(width: 8),
-              Text('Sucesso!'),
-            ],
-          ),
-          content: Text('Pagamento processado com sucesso. Seu pedido foi confirmado!'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              },
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
-    });
+    await Future.delayed(Duration(seconds: 2));
+
+    Navigator.pop(context); // Remove loading
+    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Pedido confirmado com sucesso!'),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
   }
+}
+
+class _OrderItem extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _OrderItem(this.label, this.value);
 
   @override
-  void dispose() {
-    _cardNumberController.dispose();
-    _expiryController.dispose();
-    _cvvController.dispose();
-    _cardHolderController.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 14,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -374,24 +443,68 @@ class _PaymentMethodOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: value == groupValue ? AppColors.primaryPurple : Colors.grey[300]!,
-          width: 2,
+    final isSelected = value == groupValue;
+    
+    return GestureDetector(
+      onTap: () => onChanged(value),
+      child: Container(
+        margin: EdgeInsets.only(bottom: 12),
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? AppColors.primaryPurple : Colors.transparent,
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: Offset(0, 2),
+            ),
+          ],
         ),
-      ),
-      child: RadioListTile<String>(
-        title: Text(title, style: TextStyle(fontWeight: FontWeight.w600)),
-        subtitle: Text(subtitle, style: TextStyle(color: Colors.grey[600])),
-        secondary: Icon(icon, color: AppColors.primaryPurple),
-        value: value,
-        groupValue: groupValue,
-        onChanged: onChanged,
-        activeColor: AppColors.primaryPurple,
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.primaryPurple.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: AppColors.primaryPurple),
+            ),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Radio<String>(
+              value: value,
+              groupValue: groupValue,
+              onChanged: onChanged,
+              activeColor: AppColors.primaryPurple,
+            ),
+          ],
+        ),
       ),
     );
   }
