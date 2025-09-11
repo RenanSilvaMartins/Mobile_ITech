@@ -161,4 +161,30 @@ class TechnicianService {
   static double _degreesToRadians(double degrees) {
     return degrees * (3.14159265359 / 180);
   }
+
+  static void registerTechnician({
+    required String name,
+    required String email,
+    required String phone,
+    required String specialty,
+  }) {
+    final newTechnician = TechnicianModel(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      name: name,
+      specialty: specialty,
+      rating: 0.0,
+      experience: 'Novo técnico',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+      phone: phone,
+      email: email,
+      services: [],
+      latitude: -23.5505,
+      longitude: -46.6333,
+      address: 'São Paulo - SP',
+      completedServices: 0,
+      reviews: [],
+    );
+    _technicians.add(newTechnician);
+  }
 }

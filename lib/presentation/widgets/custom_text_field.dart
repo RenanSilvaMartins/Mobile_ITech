@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class CustomTextField extends StatefulWidget {
   final String hintText;
@@ -10,6 +12,8 @@ class CustomTextField extends StatefulWidget {
   final bool showValidation;
   final bool isPassword;
   final VoidCallback? onToggleVisibility;
+  final List<TextInputFormatter>? inputFormatters;
+  final int? maxLength;
 
   const CustomTextField({
     super.key,
@@ -22,6 +26,8 @@ class CustomTextField extends StatefulWidget {
     this.showValidation = false,
     this.isPassword = false,
     this.onToggleVisibility,
+    this.inputFormatters,
+    this.maxLength,
   });
 
   @override
@@ -52,6 +58,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
         controller: widget.controller,
         obscureText: widget.obscureText,
         keyboardType: widget.keyboardType,
+        inputFormatters: widget.inputFormatters,
+        maxLength: widget.maxLength,
         onChanged: (value) {
           if (widget.showValidation) {
             setState(() {});
@@ -65,6 +73,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 : Colors.grey,
           ),
           border: InputBorder.none,
+          counterText: '',
           suffixIcon: widget.isPassword && widget.onToggleVisibility != null
               ? IconButton(
                   icon: Icon(

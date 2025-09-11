@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/services/user_service.dart';
 import 'login_screen.dart';
@@ -15,8 +17,13 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
-  final _phoneController = TextEditingController(text: '(11) 99999-9999');
-  final _addressController = TextEditingController(text: 'Rua das Flores, 123');
+  final _phoneController = TextEditingController();
+  final _addressController = TextEditingController();
+  
+  final _phoneMask = MaskTextInputFormatter(
+    mask: '(##) #####-####',
+    filter: {'#': RegExp(r'[0-9]')},
+  );
 
   @override
   void initState() {
@@ -24,6 +31,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final user = UserService().currentUser;
     _nameController = TextEditingController(text: user?.name ?? 'Cliente');
     _emailController = TextEditingController(text: user?.email ?? 'email@exemplo.com');
+    _phoneController.text = user?.phone ?? '';
+    _addressController.text = user?.address ?? '';
   }
 
   @override
@@ -171,6 +180,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
+                          UserService().updateUser(
+                            name: _nameController.text,
+                            email: _emailController.text,
+                            phone: _phoneController.text,
+                            address: _addressController.text,
+                          );
+                          setState(() {});
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('Dados atualizados com sucesso!'),
@@ -329,6 +345,11 @@ class _ProfileField extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     controller: controller,
+                    inputFormatters: label == 'Telefone' ? [MaskTextInputFormatter(mask: '(##) #####-####', filter: {'#': RegExp(r'[0-9]')})] : 
+                                   label == 'Nome Completo' ? [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'))] :
+                                   label == 'Email' ? [FilteringTextInputFormatter.deny(RegExp(r'\s'))] : null,
+                    keyboardType: label == 'Telefone' ? TextInputType.phone :
+                                 label == 'Email' ? TextInputType.emailAddress : TextInputType.text,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       isDense: true,

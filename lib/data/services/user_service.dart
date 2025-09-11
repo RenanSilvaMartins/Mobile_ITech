@@ -13,6 +13,22 @@ class UserService {
     _currentUser = user;
   }
 
+  void updateUser({
+    String? name,
+    String? email,
+    String? phone,
+    String? address,
+  }) {
+    if (_currentUser != null) {
+      _currentUser = _currentUser!.copyWith(
+        name: name,
+        email: email,
+        phone: phone,
+        address: address,
+      );
+    }
+  }
+
   void logout() {
     _currentUser = null;
   }

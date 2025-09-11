@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../core/constants/app_colors.dart';
+import 'home_screen.dart';
+import '../../data/models/service_request_model.dart';
+import '../../data/services/service_request_service.dart';
 
 class PaymentScreen extends StatefulWidget {
   final Map<String, dynamic> technician;
@@ -171,6 +177,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
               SizedBox(height: 12),
               TextField(
                 controller: _nameController,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),
+                ],
                 decoration: InputDecoration(
                   labelText: 'Nome no cartão',
                   border: OutlineInputBorder(
@@ -184,6 +193,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
               SizedBox(height: 16),
               TextField(
                 controller: _cardNumberController,
+                inputFormatters: [
+                  MaskTextInputFormatter(
+                    mask: '#### #### #### ####',
+                    filter: {'#': RegExp(r'[0-9]')},
+                  ),
+                ],
                 decoration: InputDecoration(
                   labelText: 'Número do cartão',
                   hintText: '1234 5678 9012 3456',
@@ -202,6 +217,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   Expanded(
                     child: TextField(
                       controller: _expiryController,
+                      inputFormatters: [
+                        MaskTextInputFormatter(
+                          mask: '##/##',
+                          filter: {'#': RegExp(r'[0-9]')},
+                        ),
+                      ],
                       decoration: InputDecoration(
                         labelText: 'Validade',
                         hintText: 'MM/AA',
@@ -219,6 +240,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   Expanded(
                     child: TextField(
                       controller: _cvvController,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(3),
+                      ],
                       decoration: InputDecoration(
                         labelText: 'CVV',
                         hintText: '123',
@@ -262,19 +287,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         color: Colors.grey[200],
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.qr_code, size: 80, color: Colors.grey[600]),
-                          SizedBox(height: 8),
-                          Text(
-                            'QR Code PIX',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
+                      child: QrImageView(
+                        data: _generatePixData(),
+                        version: QrVersions.auto,
+                        size: 200.0,
+                        backgroundColor: Colors.white,
                       ),
                     ),
                     SizedBox(height: 16),
@@ -365,6 +382,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
+  String _generatePixData() {
+    return 'PIX|${widget.totalPrice.toStringAsFixed(2)}|${widget.technician['name']}|${DateTime.now().millisecondsSinceEpoch}';
+  }
+
   void _processPayment() async {
     // Simular processamento
     showDialog(
@@ -377,8 +398,30 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     await Future.delayed(Duration(seconds: 2));
 
+    // Salvar serviço na lista
+    final serviceRequest = ServiceRequestModel(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      technicianName: widget.technician['name'],
+      service: widget.service,
+      urgency: widget.urgency,
+      totalPrice: widget.totalPrice,
+      date: widget.date,
+      time: '${widget.time.hour.toString().padLeft(2, '0')}:${widget.time.minute.toString().padLeft(2, '0')}',
+      address: widget.address,
+      description: widget.description,
+      paymentMethod: selectedPaymentMethod,
+      status: 'Confirmado',
+      createdAt: DateTime.now(),
+    );
+    
+    ServiceRequestService.addServiceRequest(serviceRequest);
+
     Navigator.pop(context); // Remove loading
-    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+      (route) => false,
+    );
     
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

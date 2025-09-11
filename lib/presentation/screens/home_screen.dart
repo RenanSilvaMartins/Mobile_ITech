@@ -5,6 +5,7 @@ import 'profile_screen.dart';
 import 'services_screen.dart';
 import 'service_history_screen.dart';
 import '../../data/services/user_service.dart';
+import '../../data/services/service_request_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -324,20 +325,15 @@ class _HomeContentState extends State<HomeContent> {
                       ],
                     ),
                     SizedBox(height: 16),
-                    _ServiceCard(
-                      title: 'Reparo iPhone 12',
-                      technician: 'João Silva',
-                      status: 'Concluído',
-                      date: '15/12/2023',
-                      statusColor: Colors.green,
-                    ),
-                    _ServiceCard(
-                      title: 'Formatação Notebook',
-                      technician: 'Maria Santos',
-                      status: 'Em andamento',
-                      date: '18/12/2023',
-                      statusColor: Colors.orange,
-                    ),
+                    ...ServiceRequestService.getAllServiceRequests().take(2).map((service) => 
+                      _ServiceCard(
+                        title: service.service,
+                        technician: service.technicianName,
+                        status: service.status,
+                        date: '${service.date.day}/${service.date.month}/${service.date.year}',
+                        statusColor: service.status == 'Concluído' ? Colors.green : Colors.orange,
+                      ),
+                    ).toList(),
                   ],
                 ),
               ),

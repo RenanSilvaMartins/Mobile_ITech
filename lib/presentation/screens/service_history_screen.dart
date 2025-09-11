@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../data/services/service_request_service.dart';
+import '../../data/models/service_request_model.dart';
 
 class ServiceHistoryScreen extends StatefulWidget {
   @override
@@ -10,48 +12,12 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> with Ticker
   late AnimationController _animationController;
   late List<AnimationController> _cardAnimationControllers;
   
-  final List<Map<String, dynamic>> services = [
-    {
-      'title': 'Reparo iPhone 12',
-      'date': '15/12/2023',
-      'status': 'Concluído',
-      'price': 'R\$ 150,00',
-      'technician': 'João Silva',
-      'description': 'Troca de tela e bateria',
-      'icon': Icons.phone_android,
-    },
-    {
-      'title': 'Formatação Notebook',
-      'date': '18/12/2023',
-      'status': 'Em andamento',
-      'price': 'R\$ 80,00',
-      'technician': 'Maria Santos',
-      'description': 'Formatação completa do sistema',
-      'icon': Icons.laptop,
-    },
-    {
-      'title': 'Reparo Desktop',
-      'date': '10/12/2023',
-      'status': 'Concluído',
-      'price': 'R\$ 120,00',
-      'technician': 'Carlos Lima',
-      'description': 'Troca de fonte e limpeza',
-      'icon': Icons.desktop_windows,
-    },
-    {
-      'title': 'Recuperação de Dados',
-      'date': '05/12/2023',
-      'status': 'Concluído',
-      'price': 'R\$ 200,00',
-      'technician': 'Ana Costa',
-      'description': 'Recuperação de HD danificado',
-      'icon': Icons.storage,
-    },
-  ];
+  List<ServiceRequestModel> services = [];
 
   @override
   void initState() {
     super.initState();
+    services = ServiceRequestService.getAllServiceRequests();
     _animationController = AnimationController(
       duration: Duration(milliseconds: 600),
       vsync: this,
@@ -74,6 +40,20 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> with Ticker
           _cardAnimationControllers[i].forward();
         }
       });
+    }
+  }
+
+  IconData _getServiceIcon(String service) {
+    if (service.toLowerCase().contains('celular') || service.toLowerCase().contains('smartphone')) {
+      return Icons.phone_android;
+    } else if (service.toLowerCase().contains('notebook') || service.toLowerCase().contains('laptop')) {
+      return Icons.laptop;
+    } else if (service.toLowerCase().contains('desktop') || service.toLowerCase().contains('computador')) {
+      return Icons.desktop_windows;
+    } else if (service.toLowerCase().contains('tv') || service.toLowerCase().contains('televisão')) {
+      return Icons.tv;
+    } else {
+      return Icons.build;
     }
   }
 
@@ -138,13 +118,13 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> with Ticker
                         child: FadeTransition(
                           opacity: _cardAnimationControllers[index],
                           child: _ServiceHistoryCard(
-                            title: service['title'],
-                            date: service['date'],
-                            status: service['status'],
-                            price: service['price'],
-                            technician: service['technician'],
-                            description: service['description'],
-                            icon: service['icon'],
+                            title: service.service,
+                            date: '${service.date.day}/${service.date.month}/${service.date.year}',
+                            status: service.status,
+                            price: 'R\$ ${service.totalPrice.toStringAsFixed(2)}',
+                            technician: service.technicianName,
+                            description: service.description,
+                            icon: _getServiceIcon(service.service),
                           ),
                         ),
                       );

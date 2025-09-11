@@ -5,6 +5,7 @@ import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
 import '../../data/models/user_model.dart';
 import '../../data/services/user_service.dart';
+import '../../data/services/technician_service.dart';
 import 'home_screen.dart';
 
 class CadastroScreen extends StatefulWidget {
@@ -18,8 +19,11 @@ class _CadastroScreenState extends State<CadastroScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _specialtyController = TextEditingController();
+  final _phoneController = TextEditingController();
   bool _showValidation = false;
   bool _obscurePassword = true;
+  bool _isTechnician = false;
 
   bool _isValidName(String name) {
     return name.trim().length >= 2;
@@ -121,6 +125,43 @@ class _CadastroScreenState extends State<CadastroScreen> {
                 ),
                 child: Column(
                   children: [
+                    // Toggle para escolher tipo de cadastro
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[50],
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey[200]!),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            _isTechnician ? Icons.build : Icons.person,
+                            color: AppColors.primaryPurple,
+                          ),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              _isTechnician ? 'Cadastrar como Técnico' : 'Cadastrar como Cliente',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          Switch(
+                            value: _isTechnician,
+                            onChanged: (value) {
+                              setState(() {
+                                _isTechnician = value;
+                              });
+                            },
+                            activeColor: AppColors.primaryPurple,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20),
                     ValidatedTextField(
                       hintText: AppStrings.nameHint,
                       controller: _nameController,
@@ -136,6 +177,23 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       showValidation: _showValidation,
                     ),
                     SizedBox(height: 20),
+                    if (_isTechnician) ...[
+                      ValidatedTextField(
+                        hintText: 'Telefone',
+                        keyboardType: TextInputType.phone,
+                        controller: _phoneController,
+                        isValid: _phoneController.text.length >= 10,
+                        showValidation: _showValidation,
+                      ),
+                      SizedBox(height: 20),
+                      ValidatedTextField(
+                        hintText: 'Especialidade (ex: Celular, Notebook, TV)',
+                        controller: _specialtyController,
+                        isValid: _specialtyController.text.trim().length >= 3,
+                        showValidation: _showValidation,
+                      ),
+                      SizedBox(height: 20),
+                    ],
                     ValidatedTextField(
                       hintText: AppStrings.passwordHint,
                       obscureText: _obscurePassword,
@@ -287,26 +345,50 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       ],
                     SizedBox(height: 32),
                     CustomButton(
-                      text: AppStrings.signUpButton,
+                      text: _isTechnician ? 'Cadastrar como Técnico' : AppStrings.signUpButton,
                       onPressed: () {
                         setState(() {
                           _showValidation = true;
                         });
-                        if (_isValidName(_nameController.text) && 
+                        bool isValidForm = _isValidName(_nameController.text) && 
                             _isValidEmail(_emailController.text) && 
-                            _isValidPassword(_passwordController.text)) {
-                          // Salvar usuário cadastrado
-                          UserService().setCurrentUser(UserModel(
-                            id: '1',
-                            name: _nameController.text,
-                            email: _emailController.text,
-                          ));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Cadastro realizado com sucesso!'),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
+                            _isValidPassword(_passwordController.text);
+                        
+                        if (_isTechnician) {
+                          isValidForm = isValidForm && 
+                              _phoneController.text.length >= 10 && 
+                              _specialtyController.text.trim().length >= 3;
+                        }
+                        
+                        if (isValidForm) {
+                          if (_isTechnician) {
+                            // Salvar técnico cadastrado
+                            TechnicianService.registerTechnician(
+                              name: _nameController.text,
+                              email: _emailController.text,
+                              phone: _phoneController.text,
+                              specialty: _specialtyController.text,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Técnico cadastrado com sucesso!'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          } else {
+                            // Salvar usuário cadastrado
+                            UserService().setCurrentUser(UserModel(
+                              id: '1',
+                              name: _nameController.text,
+                              email: _emailController.text,
+                            ));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Cadastro realizado com sucesso!'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          }
                           // Navegar para home após cadastro
                           Future.delayed(Duration(seconds: 1), () {
                             Navigator.pushReplacement(
@@ -360,6 +442,8 @@ class _CadastroScreenState extends State<CadastroScreen> {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _specialtyController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 }

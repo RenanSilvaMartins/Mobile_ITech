@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'cadastro_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'forgot_password_screen.dart';
 import 'home_screen.dart';
 import '../../core/constants/app_colors.dart';
@@ -10,6 +10,7 @@ import '../widgets/social_login_button.dart';
 import '../widgets/logo_widgets.dart';
 import '../../data/models/user_model.dart';
 import '../../data/services/user_service.dart';
+import '../../data/services/technician_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -23,6 +24,36 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _showValidation = false;
   bool _obscurePassword = true;
+  bool _isTechnician = false;
+  bool _rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  _loadSavedCredentials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _emailController.text = prefs.getString('saved_email') ?? '';
+      _passwordController.text = prefs.getString('saved_password') ?? '';
+      _rememberMe = prefs.getBool('remember_me') ?? false;
+    });
+  }
+
+  _saveCredentials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (_rememberMe) {
+      await prefs.setString('saved_email', _emailController.text);
+      await prefs.setString('saved_password', _passwordController.text);
+      await prefs.setBool('remember_me', true);
+    } else {
+      await prefs.remove('saved_email');
+      await prefs.remove('saved_password');
+      await prefs.setBool('remember_me', false);
+    }
+  }
 
   bool _isValidEmail(String email) {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
@@ -116,6 +147,43 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: Column(
                         children: [
+                          // Toggle para escolher tipo de login
+                          Container(
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[50],
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.grey[200]!),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _isTechnician ? Icons.build : Icons.person,
+                                  color: AppColors.primaryPurple,
+                                ),
+                                SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _isTechnician ? 'Login como Técnico' : 'Login como Cliente',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                Switch(
+                                  value: _isTechnician,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _isTechnician = value;
+                                    });
+                                  },
+                                  activeColor: AppColors.primaryPurple,
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 20),
                           ValidatedTextField(
                             hintText: _emailController.text.isEmpty ? 'usuario@exemplo.com' : AppStrings.emailHint,
                             keyboardType: TextInputType.emailAddress,
@@ -292,40 +360,69 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ],
                           SizedBox(height: 16),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ForgotPasswordScreen(),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                AppStrings.forgotPassword,
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: _rememberMe,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _rememberMe = value ?? false;
+                                  });
+                                },
+                                activeColor: AppColors.primaryPurple,
+                              ),
+                              Text(
+                                'Lembrar credenciais',
                                 style: TextStyle(
-                                  color: AppColors.primaryPurple,
-                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[600],
+                                  fontSize: 14,
                                 ),
                               ),
-                            ),
+                              Spacer(),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ForgotPasswordScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  AppStrings.forgotPassword,
+                                  style: TextStyle(
+                                    color: AppColors.primaryPurple,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 32),
                           CustomButton(
-                            text: AppStrings.loginButton,
-                            onPressed: () {
+                            text: _isTechnician ? 'Entrar como Técnico' : AppStrings.loginButton,
+                            onPressed: () async {
                               setState(() {
                                 _showValidation = true;
                               });
                               if (_isValidEmail(_emailController.text) && _isValidPassword(_passwordController.text)) {
-                                // Salvar usuário logado
-                                UserService().setCurrentUser(UserModel(
-                                  id: '1',
-                                  name: _emailController.text.split('@')[0],
-                                  email: _emailController.text,
-                                ));
+                                await _saveCredentials();
+                                if (_isTechnician) {
+                                  // Login como técnico
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Login de técnico realizado com sucesso!'),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  );
+                                } else {
+                                  // Login como cliente
+                                  UserService().setCurrentUser(UserModel(
+                                    id: '1',
+                                    name: 'Cliente',
+                                    email: _emailController.text,
+                                  ));
+                                }
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -394,36 +491,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     SizedBox(height: 32),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          AppStrings.noAccount,
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 14,
-                          ),
-                        ),
-                        SizedBox(width: 4),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CadastroScreen()),
-                            );
-                          },
-                          child: Text(
-                            AppStrings.signUp,
-                            style: TextStyle(
-                              color: AppColors.primaryPurple,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
