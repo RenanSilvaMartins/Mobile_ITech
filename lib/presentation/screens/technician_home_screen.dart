@@ -1,0 +1,82 @@
+import 'package:flutter/material.dart';
+import '../../core/constants/app_colors.dart';
+import 'technician_requests_screen.dart';
+import 'technician_profile_screen.dart';
+import 'technician_earnings_screen.dart';
+
+class TechnicianHomeScreen extends StatefulWidget {
+  const TechnicianHomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<TechnicianHomeScreen> createState() => _TechnicianHomeScreenState();
+}
+
+class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
+  int _currentIndex = 0;
+  bool _isOnline = true;
+
+  final List<Widget> _screens = [
+    TechnicianRequestsScreen(),
+    TechnicianEarningsScreen(),
+    TechnicianProfileScreen(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Área do Técnico'),
+        backgroundColor: AppColors.primaryPurple,
+        foregroundColor: Colors.white,
+        actions: [
+          Container(
+            margin: EdgeInsets.only(right: 16),
+            child: Row(
+              children: [
+                Text(
+                  _isOnline ? 'Online' : 'Offline',
+                  style: TextStyle(fontSize: 14),
+                ),
+                SizedBox(width: 8),
+                Switch(
+                  value: _isOnline,
+                  onChanged: (value) {
+                    setState(() {
+                      _isOnline = value;
+                    });
+                  },
+                  activeColor: Colors.green,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      body: _screens[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        selectedItemColor: AppColors.primaryPurple,
+        unselectedItemColor: Colors.grey,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assignment),
+            label: 'Solicitações',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.attach_money),
+            label: 'Ganhos',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Perfil',
+          ),
+        ],
+      ),
+    );
+  }
+}

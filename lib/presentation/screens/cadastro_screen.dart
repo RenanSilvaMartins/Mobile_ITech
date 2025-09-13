@@ -363,7 +363,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                         if (isValidForm) {
                           if (_isTechnician) {
                             // Salvar técnico cadastrado
-                            TechnicianService.registerTechnician(
+                            TechnicianService().registerTechnician(
                               name: _nameController.text,
                               email: _emailController.text,
                               phone: _phoneController.text,

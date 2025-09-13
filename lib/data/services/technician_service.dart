@@ -2,6 +2,46 @@ import 'dart:math';
 import '../models/technician_model.dart';
 
 class TechnicianService {
+  static final TechnicianService _instance = TechnicianService._internal();
+  factory TechnicianService() => _instance;
+  TechnicianService._internal();
+
+  TechnicianModel? _currentTechnician;
+
+  TechnicianModel? get currentTechnician => _currentTechnician;
+
+  void setCurrentTechnician(TechnicianModel technician) {
+    _currentTechnician = technician;
+  }
+
+  void logout() {
+    _currentTechnician = null;
+  }
+
+  // Simula login do técnico
+  TechnicianModel? loginTechnician(String email, String password) {
+    final technician = TechnicianModel(
+      id: '1',
+      name: 'Carlos Técnico',
+      specialty: 'Especialista em Hardware',
+      rating: 4.8,
+      experience: '5 anos',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+      phone: '(11) 99999-0000',
+      email: email,
+      services: ['Reparo de Hardware', 'Formatação', 'Instalação de Software'],
+      latitude: -23.5505,
+      longitude: -46.6333,
+      address: 'São Paulo, SP',
+      reviews: [],
+      completedServices: 127,
+    );
+    
+    setCurrentTechnician(technician);
+    return technician;
+  }
+
   static final List<TechnicianModel> _technicians = [
     TechnicianModel(
       id: '1',
@@ -108,15 +148,15 @@ class TechnicianService {
     ),
   ];
 
-  static List<TechnicianModel> getAllTechnicians() {
+  List<TechnicianModel> getAllTechnicians() {
     return _technicians;
   }
 
-  static List<TechnicianModel> getAvailableTechnicians() {
+  List<TechnicianModel> getAvailableTechnicians() {
     return _technicians.where((tech) => tech.available).toList();
   }
 
-  static TechnicianModel? getTechnicianById(String id) {
+  TechnicianModel? getTechnicianById(String id) {
     try {
       return _technicians.firstWhere((tech) => tech.id == id);
     } catch (e) {
@@ -124,27 +164,27 @@ class TechnicianService {
     }
   }
 
-  static List<TechnicianModel> searchTechnicians(String query) {
+  List<TechnicianModel> searchTechnicians(String query) {
     return _technicians.where((tech) =>
       tech.name.toLowerCase().contains(query.toLowerCase()) ||
       tech.specialty.toLowerCase().contains(query.toLowerCase())
     ).toList();
   }
 
-  static List<TechnicianModel> filterBySpecialty(String specialty) {
+  List<TechnicianModel> filterBySpecialty(String specialty) {
     return _technicians.where((tech) =>
       tech.specialty.toLowerCase().contains(specialty.toLowerCase())
     ).toList();
   }
 
-  static List<TechnicianModel> getTechniciansByLocation(double lat, double lng, double radiusKm) {
+  List<TechnicianModel> getTechniciansByLocation(double lat, double lng, double radiusKm) {
     return _technicians.where((tech) {
       double distance = _calculateDistance(lat, lng, tech.latitude, tech.longitude);
       return distance <= radiusKm;
     }).toList();
   }
 
-  static double _calculateDistance(double lat1, double lng1, double lat2, double lng2) {
+  double _calculateDistance(double lat1, double lng1, double lat2, double lng2) {
     // Fórmula de Haversine simplificada para cálculo de distância
     const double earthRadius = 6371; // Raio da Terra em km
     double dLat = _degreesToRadians(lat2 - lat1);
@@ -153,16 +193,16 @@ class TechnicianService {
     double a = (dLat / 2) * (dLat / 2) +
         _degreesToRadians(lat1) * _degreesToRadians(lat2) *
         (dLng / 2) * (dLng / 2);
-    double c = 2 * atan(sqrt(a) / sqrt(1 - a));
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
     
     return earthRadius * c;
   }
 
-  static double _degreesToRadians(double degrees) {
-    return degrees * (3.14159265359 / 180);
+  double _degreesToRadians(double degrees) {
+    return degrees * (pi / 180);
   }
 
-  static void registerTechnician({
+  void registerTechnician({
     required String name,
     required String email,
     required String phone,

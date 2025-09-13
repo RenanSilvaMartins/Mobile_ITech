@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'forgot_password_screen.dart';
 import 'home_screen.dart';
+import 'technician_home_screen.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../widgets/custom_text_field.dart';
@@ -409,12 +410,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                 await _saveCredentials();
                                 if (_isTechnician) {
                                   // Login como técnico
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('Login de técnico realizado com sucesso!'),
-                                      backgroundColor: Colors.green,
-                                    ),
+                                  final technician = TechnicianService().loginTechnician(
+                                    _emailController.text,
+                                    _passwordController.text,
                                   );
+                                  if (technician != null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Login de técnico realizado com sucesso!'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => TechnicianHomeScreen()),
+                                    );
+                                  }
                                 } else {
                                   // Login como cliente
                                   UserService().setCurrentUser(UserModel(
@@ -422,11 +433,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     name: 'Cliente',
                                     email: _emailController.text,
                                   ));
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                                  );
                                 }
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => HomeScreen()),
-                                );
                               }
                             },
                           ),
