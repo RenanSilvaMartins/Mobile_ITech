@@ -136,25 +136,37 @@ class _LoginScreenState extends State<LoginScreen> {
                     Container(
                       padding: EdgeInsets.all(32),
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(24),
+                        gradient: AppColors.cardGradient,
+                        borderRadius: BorderRadius.circular(28),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 20,
-                            offset: Offset(0, 10),
+                            color: AppColors.shadowColorDark,
+                            blurRadius: 24,
+                            offset: Offset(0, 12),
+                            spreadRadius: 0,
                           ),
                         ],
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.2),
+                          width: 1,
+                        ),
                       ),
                       child: Column(
                         children: [
                           // Toggle para escolher tipo de login
                           Container(
-                            padding: EdgeInsets.all(16),
+                            padding: EdgeInsets.all(20),
                             decoration: BoxDecoration(
-                              color: Colors.grey[50],
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey[200]!),
+                              color: AppColors.background,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: AppColors.divider),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.shadowColor,
+                                  blurRadius: 8,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
                             ),
                             child: Row(
                               children: [
@@ -169,6 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16,
+                                      color: AppColors.textPrimary,
                                     ),
                                   ),
                                 ),
@@ -191,6 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: _emailController,
                             isValid: _isValidEmail(_emailController.text),
                             showValidation: _showValidation,
+                            prefixIcon: Icons.email_outlined,
                           ),
                           SizedBox(height: 20),
                           ValidatedTextField(
@@ -201,6 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             showValidation: _showValidation,
                             isLast: true,
                             isPassword: true,
+                            prefixIcon: Icons.lock_outlined,
                             onToggleVisibility: () {
                               setState(() {
                                 _obscurePassword = !_obscurePassword;
@@ -240,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
-                                        'Formato de email válido (ex: usuario@exemplo.com)',
+                                        'Email válido',
                                         style: TextStyle(
                                           color: RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(_emailController.text) ? Colors.green : Colors.red,
                                           fontSize: 14,
@@ -375,8 +390,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               Text(
                                 'Lembrar credenciais',
                                 style: TextStyle(
-                                  color: Colors.grey[600],
+                                  color: AppColors.textSecondary,
                                   fontSize: 14,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                               Spacer(),
@@ -402,6 +418,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(height: 32),
                           CustomButton(
                             text: _isTechnician ? 'Entrar como Técnico' : AppStrings.loginButton,
+                            icon: _isTechnician ? Icons.build : Icons.login,
                             onPressed: () async {
                               setState(() {
                                 _showValidation = true;

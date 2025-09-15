@@ -52,8 +52,12 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() => _currentIndex = index);
         },
         type: BottomNavigationBarType.fixed,
+        backgroundColor: AppColors.surface,
         selectedItemColor: AppColors.primaryPurple,
-        unselectedItemColor: Colors.grey,
+        unselectedItemColor: AppColors.textTertiary,
+        elevation: 8,
+        selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
+        unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500),
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -103,20 +107,35 @@ class _HomeContentState extends State<HomeContent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
               // Header
               Container(
-                padding: EdgeInsets.all(24),
+                padding: EdgeInsets.fromLTRB(24, 32, 24, 40),
                 decoration: BoxDecoration(
-                  gradient: AppColors.modernGradient,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(32),
-                    bottomRight: Radius.circular(32),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primaryPurple,
+                      AppColors.accentPurple,
+                      AppColors.primaryBlue,
+                    ],
                   ),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(40),
+                    bottomRight: Radius.circular(40),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primaryPurple.withOpacity(0.3),
+                      blurRadius: 20,
+                      offset: Offset(0, 10),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,16 +165,22 @@ class _HomeContentState extends State<HomeContent> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            // Navegar para aba do perfil ao invés de push
                             final homeState = context.findAncestorStateOfType<_HomeScreenState>();
                             homeState?.setState(() {
                               homeState._currentIndex = 3;
                             });
                           },
-                          child: CircleAvatar(
-                            radius: 25,
-                            backgroundColor: Colors.white.withOpacity(0.2),
-                            child: Icon(Icons.person, color: Colors.white, size: 30),
+                          child: Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.3),
+                                width: 1,
+                              ),
+                            ),
+                            child: Icon(Icons.person_outline, color: Colors.white, size: 24),
                           ),
                         ),
                       ],
@@ -169,20 +194,32 @@ class _HomeContentState extends State<HomeContent> {
                         });
                       },
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.white.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.3),
+                            width: 1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.search, color: Colors.white),
-                            SizedBox(width: 12),
+                            Icon(Icons.search_rounded, color: Colors.white, size: 22),
+                            SizedBox(width: 16),
                             Text(
                               'Buscar serviços...',
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
+                                color: Colors.white.withOpacity(0.9),
                                 fontSize: 16,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ],
@@ -204,7 +241,7 @@ class _HomeContentState extends State<HomeContent> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
-                        color: Colors.grey[800],
+                        color: AppColors.textPrimary,
                       ),
                     ),
                     SizedBox(height: 16),
@@ -293,7 +330,7 @@ class _HomeContentState extends State<HomeContent> {
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w700,
-                            color: Colors.grey[800],
+                            color: AppColors.textPrimary,
                           ),
                         ),
                         TextButton(
@@ -413,42 +450,53 @@ class _QuickActionCardState extends State<_QuickActionCard> with SingleTickerPro
               duration: Duration(milliseconds: 200),
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                gradient: AppColors.cardGradient,
+                borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(_isPressed ? 0.1 : 0.05),
-                    blurRadius: _isPressed ? 15 : 10,
-                    offset: Offset(0, _isPressed ? 8 : 5),
+                    color: AppColors.shadowColor,
+                    blurRadius: _isPressed ? 20 : 16,
+                    offset: Offset(0, _isPressed ? 10 : 6),
+                    spreadRadius: 0,
                   ),
                 ],
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.2),
+                  width: 1,
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AnimatedContainer(
                     duration: Duration(milliseconds: 200),
-                    padding: EdgeInsets.all(12),
+                    padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: widget.color.withOpacity(_isPressed ? 0.2 : 0.1),
-                      borderRadius: BorderRadius.circular(12),
+                      gradient: LinearGradient(
+                        colors: [
+                          widget.color.withOpacity(_isPressed ? 0.2 : 0.15),
+                          widget.color.withOpacity(_isPressed ? 0.15 : 0.1),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    child: Icon(widget.icon, color: widget.color, size: 24),
+                    child: Icon(widget.icon, color: widget.color, size: 28),
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 16),
                   Text(
                     widget.title,
                     style: TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey[800],
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   Text(
                     widget.subtitle,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey[600],
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],

@@ -81,7 +81,7 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
           'Técnicos Disponíveis',
@@ -102,7 +102,7 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.surface,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
@@ -114,7 +114,7 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.search, color: Colors.grey),
+                  Icon(Icons.search, color: AppColors.textTertiary),
                   SizedBox(width: 12),
                   Expanded(
                     child: TextField(
@@ -162,13 +162,13 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
+                          Icon(Icons.search_off, size: 64, color: AppColors.textTertiary),
                           SizedBox(height: 16),
                           Text(
                             'Nenhum técnico encontrado',
                             style: TextStyle(
                               fontSize: 18,
-                              color: Colors.grey[600],
+                              color: AppColors.textSecondary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -252,7 +252,7 @@ class _TechnicianCard extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -299,14 +299,14 @@ class _TechnicianCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey[800],
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 Text(
                   specialty,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[600],
+                    color: AppColors.textSecondary,
                   ),
                 ),
                 SizedBox(height: 4),
@@ -319,17 +319,17 @@ class _TechnicianCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: Colors.grey[700],
+                        color: AppColors.textPrimary,
                       ),
                     ),
                     SizedBox(width: 16),
-                    Icon(Icons.work, color: Colors.grey, size: 16),
+                    Icon(Icons.work, color: AppColors.textTertiary, size: 16),
                     SizedBox(width: 4),
                     Text(
                       experience,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey[600],
+                        color: AppColors.textSecondary,
                       ),
                     ),
                   ],
@@ -342,13 +342,13 @@ class _TechnicianCard extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: available ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
+                  color: available ? AppColors.primaryGreen.withOpacity(0.1) : AppColors.primaryRed.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   available ? 'Disponível' : 'Ocupado',
                   style: TextStyle(
-                    color: available ? Colors.green : Colors.red,
+                    color: available ? AppColors.primaryGreen : AppColors.primaryRed,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),

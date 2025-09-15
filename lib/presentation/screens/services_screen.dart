@@ -93,7 +93,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
           'Nossos Serviços',
@@ -114,7 +114,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.surface,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
@@ -126,7 +126,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.search, color: Colors.grey),
+                  Icon(Icons.search, color: AppColors.textTertiary),
                   SizedBox(width: 12),
                   Expanded(
                     child: TextField(
@@ -177,13 +177,13 @@ class _ServicesScreenState extends State<ServicesScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
+                          Icon(Icons.search_off, size: 64, color: AppColors.textTertiary),
                           SizedBox(height: 16),
                           Text(
                             'Nenhum serviço encontrado',
                             style: TextStyle(
                               fontSize: 18,
-                              color: Colors.grey[600],
+                              color: AppColors.textSecondary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -299,7 +299,7 @@ class _CategoryChipState extends State<_CategoryChip> with SingleTickerProviderS
                   onSelected: widget.onSelected,
                   selectedColor: AppColors.primaryPurple.withOpacity(0.2),
                   checkmarkColor: AppColors.primaryPurple,
-                  backgroundColor: Colors.white,
+                  backgroundColor: AppColors.surface,
                   elevation: widget.selected ? 2 : 0,
                   shadowColor: AppColors.primaryPurple.withOpacity(0.3),
                 ),
@@ -423,7 +423,7 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
           child: AnimatedContainer(
             duration: Duration(milliseconds: 200),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
@@ -461,7 +461,7 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
                           widget.category,
                           style: TextStyle(
                             fontSize: 10,
-                            color: Colors.grey[600],
+                            color: AppColors.textSecondary,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -474,7 +474,7 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey[800],
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   SizedBox(height: 4),
@@ -482,7 +482,7 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
                     widget.description,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey[600],
+                      color: AppColors.textSecondary,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -490,13 +490,13 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
                   Spacer(),
                   Row(
                     children: [
-                      Icon(Icons.access_time, size: 14, color: Colors.grey[500]),
+                      Icon(Icons.access_time, size: 14, color: AppColors.textTertiary),
                       SizedBox(width: 4),
                       Text(
                         widget.duration,
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey[600],
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ],
