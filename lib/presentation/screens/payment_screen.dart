@@ -16,6 +16,7 @@ class PaymentScreen extends StatefulWidget {
   final TimeOfDay time;
   final String address;
   final String description;
+  final String? agendamentoId;
 
   const PaymentScreen({
     Key? key,
@@ -27,6 +28,7 @@ class PaymentScreen extends StatefulWidget {
     required this.time,
     required this.address,
     required this.description,
+    this.agendamentoId,
   }) : super(key: key);
 
   @override

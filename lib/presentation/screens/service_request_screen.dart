@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../data/models/agendamento_model.dart';
+import '../../data/services/agendamento_service.dart';
 import 'payment_screen.dart';
 
 class ServiceRequestScreen extends StatefulWidget {
@@ -333,22 +335,65 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
            _descriptionController.text.isNotEmpty;
   }
 
-  void _proceedToPayment() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PaymentScreen(
-          technician: widget.technician,
-          service: selectedService!,
-          urgency: selectedUrgency!,
-          totalPrice: totalPrice,
-          date: selectedDate!,
-          time: selectedTime!,
-          address: _addressController.text,
-          description: _descriptionController.text,
+  void _proceedToPayment() async {
+    try {
+      // Criar agendamento
+      final agendamento = AgendamentoModel(
+        usuarioId: '1', // Substituir pelo ID do usuário logado
+        tecnicoId: widget.technician['id']?.toString() ?? '1',
+        servico: selectedService!,
+        descricao: _descriptionController.text,
+        endereco: _addressController.text,
+        dataAgendamento: selectedDate!,
+        horario: '${selectedTime!.hour.toString().padLeft(2, '0')}:${selectedTime!.minute.toString().padLeft(2, '0')}',
+        urgencia: selectedUrgency!,
+        preco: totalPrice,
+      );
+
+      // Mostrar loading
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+          child: CircularProgressIndicator(color: AppColors.primaryPurple),
         ),
-      ),
-    );
+      );
+
+      // Criar agendamento na API
+      final agendamentoCriado = await AgendamentoService.criar(agendamento);
+      
+      // Fechar loading
+      Navigator.pop(context);
+
+      // Ir para pagamento
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentScreen(
+            technician: widget.technician,
+            service: selectedService!,
+            urgency: selectedUrgency!,
+            totalPrice: totalPrice,
+            date: selectedDate!,
+            time: selectedTime!,
+            address: _addressController.text,
+            description: _descriptionController.text,
+            agendamentoId: agendamentoCriado.id,
+          ),
+        ),
+      );
+    } catch (e) {
+      // Fechar loading se estiver aberto
+      if (Navigator.canPop(context)) Navigator.pop(context);
+      
+      // Mostrar erro
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao criar agendamento: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<void> _selectDate() async {

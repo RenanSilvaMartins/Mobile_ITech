@@ -4,6 +4,7 @@ import 'technicians_screen.dart';
 import 'profile_screen.dart';
 import 'services_screen.dart';
 import 'service_history_screen.dart';
+import 'agendamentos_screen.dart';
 import '../../data/services/user_service.dart';
 import '../../data/services/service_request_service.dart';
 
@@ -292,11 +293,18 @@ class _HomeContentState extends State<HomeContent> {
                           child: AnimatedContainer(
                             duration: Duration(milliseconds: 200),
                             child: GestureDetector(
-                              onTap: () => _navigateToServices('Geral'),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AgendamentosScreen(),
+                                  ),
+                                );
+                              },
                               child: _QuickActionCard(
-                                icon: Icons.tablet,
-                                title: 'Tablet',
-                                subtitle: 'Assistência tablets',
+                                icon: Icons.calendar_today,
+                                title: 'Agendamentos',
+                                subtitle: 'Ver agendamentos',
                                 color: Colors.purple,
                               ),
                             ),
