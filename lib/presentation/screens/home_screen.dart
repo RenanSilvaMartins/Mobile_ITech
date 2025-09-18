@@ -52,9 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() => _currentIndex = index);
         },
         type: BottomNavigationBarType.fixed,
-        backgroundColor: AppColors.surface,
-        selectedItemColor: AppColors.primaryPurple,
-        unselectedItemColor: AppColors.textTertiary,
+        backgroundColor: AppColors.primaryPurple,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white70,
         elevation: 8,
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
         unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500),
@@ -116,15 +116,7 @@ class _HomeContentState extends State<HomeContent> {
               Container(
                 padding: EdgeInsets.fromLTRB(24, 32, 24, 40),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.primaryPurple,
-                      AppColors.accentPurple,
-                      AppColors.primaryBlue,
-                    ],
-                  ),
+                  color: AppColors.primaryPurple,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(40),
                     bottomRight: Radius.circular(40),
