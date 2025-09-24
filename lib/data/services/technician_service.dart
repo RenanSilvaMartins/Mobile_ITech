@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:math' as math;
 import '../models/technician_model.dart';
 
 class TechnicianService {
@@ -46,14 +46,14 @@ class TechnicianService {
     TechnicianModel(
       id: '1',
       name: 'João Silva',
-      specialty: 'Smartphones e Tablets',
+      specialty: 'Smartphones',
       rating: 4.8,
       experience: '5 anos',
       available: true,
       image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
       phone: '(11) 99999-1111',
       email: 'joao.silva@email.com',
-      services: ['Reparo de Tela', 'Troca de Bateria', 'Formatação'],
+      services: ['Reparo de Tela', 'Troca de Bateria'],
       latitude: -23.5505,
       longitude: -46.6333,
       address: 'Centro, São Paulo - SP',
@@ -80,14 +80,14 @@ class TechnicianService {
     TechnicianModel(
       id: '2',
       name: 'Maria Santos',
-      specialty: 'Notebooks e Desktops',
+      specialty: 'Notebooks',
       rating: 4.9,
       experience: '7 anos',
       available: true,
       image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
       phone: '(11) 99999-2222',
       email: 'maria.santos@email.com',
-      services: ['Formatação', 'Limpeza Interna', 'Recuperação de Dados'],
+      services: ['Formatação', 'Recuperação de Dados'],
       latitude: -23.5629,
       longitude: -46.6544,
       address: 'Vila Madalena, São Paulo - SP',
@@ -106,14 +106,14 @@ class TechnicianService {
     TechnicianModel(
       id: '3',
       name: 'Carlos Oliveira',
-      specialty: 'Eletrônicos em Geral',
+      specialty: 'Desktops',
       rating: 4.7,
       experience: '3 anos',
-      available: false,
+      available: true,
       image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
       phone: '(11) 99999-3333',
       email: 'carlos.oliveira@email.com',
-      services: ['Reparo de Tela', 'Instalação de Software', 'Limpeza Interna'],
+      services: ['Limpeza Interna'],
       latitude: -23.5733,
       longitude: -46.6417,
       address: 'Pinheiros, São Paulo - SP',
@@ -145,6 +145,23 @@ class TechnicianService {
           service: 'Troca de bateria',
         ),
       ],
+    ),
+    TechnicianModel(
+      id: '5',
+      name: 'Pedro Almeida',
+      specialty: 'Geral',
+      rating: 4.6,
+      experience: '6 anos',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
+      phone: '(11) 99999-5555',
+      email: 'pedro.almeida@email.com',
+      services: ['Instalação de Software'],
+      latitude: -23.5505,
+      longitude: -46.6333,
+      address: 'Centro, São Paulo - SP',
+      completedServices: 89,
+      reviews: [],
     ),
   ];
 
@@ -193,13 +210,13 @@ class TechnicianService {
     double a = (dLat / 2) * (dLat / 2) +
         _degreesToRadians(lat1) * _degreesToRadians(lat2) *
         (dLng / 2) * (dLng / 2);
-    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     
     return earthRadius * c;
   }
 
   double _degreesToRadians(double degrees) {
-    return degrees * (pi / 180);
+    return degrees * (math.pi / 180);
   }
 
   void registerTechnician({

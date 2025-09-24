@@ -5,6 +5,7 @@ class ServiceModel {
   final String duration;
   final String description;
   final String category;
+  final String requiredSpecialty;
 
   ServiceModel({
     required this.id,
@@ -13,6 +14,7 @@ class ServiceModel {
     required this.duration,
     required this.description,
     required this.category,
+    required this.requiredSpecialty,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class ServiceModel {
       duration: json['duration'],
       description: json['description'],
       category: json['category'],
+      requiredSpecialty: json['requiredSpecialty'],
     );
   }
 
@@ -34,6 +37,7 @@ class ServiceModel {
       'duration': duration,
       'description': description,
       'category': category,
+      'requiredSpecialty': requiredSpecialty,
     };
   }
 }

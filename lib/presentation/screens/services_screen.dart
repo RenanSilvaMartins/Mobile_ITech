@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../data/services/service_service.dart';
+import '../../data/models/service_model.dart';
+import '../../data/models/technician_model.dart';
 
 class ServicesScreen extends StatefulWidget {
   const ServicesScreen({Key? key}) : super(key: key);
@@ -12,72 +15,29 @@ class _ServicesScreenState extends State<ServicesScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _selectedCategory = 'Todos';
   String _searchQuery = '';
+  final ServiceService _serviceService = ServiceService();
   
-  final List<Map<String, dynamic>> _allServices = [
-    {
-      'title': 'Reparo de Tela',
-      'description': 'Troca de tela quebrada ou com defeito',
-      'price': 'R\$ 150,00',
-      'duration': '2-3 horas',
-      'icon': Icons.phone_android,
-      'category': 'Smartphone',
-    },
-    {
-      'title': 'Formatação',
-      'description': 'Formatação completa do sistema',
-      'price': 'R\$ 80,00',
-      'duration': '1-2 horas',
-      'icon': Icons.laptop,
-      'category': 'Notebook',
-    },
-    {
-      'title': 'Troca de Bateria',
-      'description': 'Substituição de bateria viciada',
-      'price': 'R\$ 120,00',
-      'duration': '1 hora',
-      'icon': Icons.battery_alert,
-      'category': 'Smartphone',
-    },
-    {
-      'title': 'Limpeza Interna',
-      'description': 'Limpeza completa de componentes',
-      'price': 'R\$ 60,00',
-      'duration': '1 hora',
-      'icon': Icons.cleaning_services,
-      'category': 'Desktop',
-    },
-    {
-      'title': 'Recuperação de Dados',
-      'description': 'Recuperação de arquivos perdidos',
-      'price': 'R\$ 200,00',
-      'duration': '2-4 horas',
-      'icon': Icons.storage,
-      'category': 'Geral',
-    },
-    {
-      'title': 'Instalação de Software',
-      'description': 'Instalação e configuração de programas',
-      'price': 'R\$ 40,00',
-      'duration': '30 min',
-      'icon': Icons.download,
-      'category': 'Geral',
-    },
-  ];
+  final Map<String, IconData> _categoryIcons = {
+    'Smartphone': Icons.phone_android,
+    'Notebook': Icons.laptop,
+    'Desktop': Icons.desktop_windows,
+    'Geral': Icons.build,
+  };
 
-  List<Map<String, dynamic>> get _filteredServices {
-    List<Map<String, dynamic>> filtered = _allServices;
+  List<ServiceModel> get _filteredServices {
+    List<ServiceModel> filtered = _serviceService.getAllServices();
     
     if (_selectedCategory != 'Todos') {
       filtered = filtered.where((service) => 
-        service['category'] == _selectedCategory
+        service.category == _selectedCategory
       ).toList();
     }
     
     if (_searchQuery.isNotEmpty) {
       filtered = filtered.where((service) => 
-        service['title'].toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        service['description'].toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        service['category'].toLowerCase().contains(_searchQuery.toLowerCase())
+        service.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+        service.description.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+        service.category.toLowerCase().contains(_searchQuery.toLowerCase())
       ).toList();
     }
     
@@ -222,12 +182,8 @@ class _ServicesScreenState extends State<ServicesScreen> {
                             duration: Duration(milliseconds: 200 + (index * 50)),
                             curve: Curves.easeInOut,
                             child: _ServiceCard(
-                              title: service['title'],
-                              description: service['description'],
-                              price: service['price'],
-                              duration: service['duration'],
-                              icon: service['icon'],
-                              category: service['category'],
+                              service: service,
+                              icon: _categoryIcons[service.category] ?? Icons.build,
                             ),
                           );
                         },
@@ -313,20 +269,12 @@ class _CategoryChipState extends State<_CategoryChip> with SingleTickerProviderS
 }
 
 class _ServiceCard extends StatefulWidget {
-  final String title;
-  final String description;
-  final String price;
-  final String duration;
+  final ServiceModel service;
   final IconData icon;
-  final String category;
 
   const _ServiceCard({
-    required this.title,
-    required this.description,
-    required this.price,
-    required this.duration,
+    required this.service,
     required this.icon,
-    required this.category,
   });
 
   @override
@@ -361,6 +309,9 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
   }
 
   void _showServiceDialog() {
+    final serviceService = ServiceService();
+    final availableTechnicians = serviceService.getTechniciansForService(widget.service.id);
+    
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -369,31 +320,62 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
       pageBuilder: (context, animation, secondaryAnimation) {
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Text('Solicitar Serviço'),
-          content: Text('Deseja solicitar o serviço "${widget.title}"?'),
+          title: Text('Técnicos Disponíveis'),
+          content: Container(
+            width: double.maxFinite,
+            height: 300,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Serviço: ${widget.service.name}'),
+                Text('Especialidade necessária: ${widget.service.requiredSpecialty}'),
+                SizedBox(height: 16),
+                Text('Técnicos qualificados:', style: TextStyle(fontWeight: FontWeight.bold)),
+                SizedBox(height: 8),
+                Expanded(
+                  child: availableTechnicians.isEmpty
+                      ? Center(child: Text('Nenhum técnico disponível para este serviço'))
+                      : ListView.builder(
+                          itemCount: availableTechnicians.length,
+                          itemBuilder: (context, index) {
+                            final technician = availableTechnicians[index];
+                            return Card(
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage: NetworkImage(technician.image),
+                                ),
+                                title: Text(technician.name),
+                                subtitle: Text('${technician.specialty} - ${technician.rating} ★'),
+                                trailing: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Serviço solicitado para ${technician.name}!'),
+                                        backgroundColor: Colors.green,
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.primaryPurple,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                  child: Text('Escolher'),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                ),
+              ],
+            ),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Serviço "${widget.title}" solicitado!'),
-                    backgroundColor: Colors.green,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryPurple,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              child: Text('Solicitar'),
+              child: Text('Fechar'),
             ),
           ],
         );
@@ -458,7 +440,7 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          widget.category,
+                          widget.service.category,
                           style: TextStyle(
                             fontSize: 10,
                             color: AppColors.textSecondary,
@@ -470,7 +452,7 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
                   ),
                   SizedBox(height: 12),
                   Text(
-                    widget.title,
+                    widget.service.name,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -479,7 +461,7 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
                   ),
                   SizedBox(height: 4),
                   Text(
-                    widget.description,
+                    widget.service.description,
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColors.textSecondary,
@@ -493,7 +475,7 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
                       Icon(Icons.access_time, size: 14, color: AppColors.textTertiary),
                       SizedBox(width: 4),
                       Text(
-                        widget.duration,
+                        widget.service.duration,
                         style: TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondary,
@@ -506,7 +488,7 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        widget.price,
+                        'R\$ ${widget.service.price.toStringAsFixed(2).replaceAll('.', ',')}',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
