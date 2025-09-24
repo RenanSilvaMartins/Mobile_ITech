@@ -64,7 +64,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
         ),
         backgroundColor: AppColors.primaryPurple,
         elevation: 0,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
       ),
       body: Padding(
         padding: EdgeInsets.all(16),
@@ -309,88 +309,11 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
   }
 
   void _showServiceDialog() {
-    final serviceService = ServiceService();
-    final availableTechnicians = serviceService.getTechniciansForService(widget.service.id);
-    
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: '',
-      transitionDuration: Duration(milliseconds: 300),
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Text('Técnicos Disponíveis'),
-          content: Container(
-            width: double.maxFinite,
-            height: 300,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Serviço: ${widget.service.name}'),
-                Text('Especialidade necessária: ${widget.service.requiredSpecialty}'),
-                SizedBox(height: 16),
-                Text('Técnicos qualificados:', style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(height: 8),
-                Expanded(
-                  child: availableTechnicians.isEmpty
-                      ? Center(child: Text('Nenhum técnico disponível para este serviço'))
-                      : ListView.builder(
-                          itemCount: availableTechnicians.length,
-                          itemBuilder: (context, index) {
-                            final technician = availableTechnicians[index];
-                            return Card(
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundImage: NetworkImage(technician.image),
-                                ),
-                                title: Text(technician.name),
-                                subtitle: Text('${technician.specialty} - ${technician.rating} ★'),
-                                trailing: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Serviço solicitado para ${technician.name}!'),
-                                        backgroundColor: Colors.green,
-                                        behavior: SnackBarBehavior.floating,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primaryPurple,
-                                    foregroundColor: Colors.white,
-                                  ),
-                                  child: Text('Escolher'),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Fechar'),
-            ),
-          ],
-        );
-      },
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeInOut,
-          ),
-          child: FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
-        );
+    Navigator.pushNamed(
+      context,
+      '/technicians',
+      arguments: {
+        'selectedService': widget.service,
       },
     );
   }

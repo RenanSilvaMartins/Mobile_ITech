@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../data/models/service_model.dart';
 import 'technician_detail_screen.dart';
+import 'service_request_screen.dart';
 
 class TechniciansScreen extends StatefulWidget {
-  const TechniciansScreen({Key? key}) : super(key: key);
+  final ServiceModel? selectedService;
+  
+  const TechniciansScreen({Key? key, this.selectedService}) : super(key: key);
   
   @override
   State<TechniciansScreen> createState() => _TechniciansScreenState();
@@ -92,7 +96,7 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
         ),
         backgroundColor: AppColors.primaryPurple,
         elevation: 0,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
       ),
       body: Padding(
         padding: EdgeInsets.all(16),
@@ -181,12 +185,26 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
                         final tech = _filteredTechnicians[index];
                   return GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TechnicianDetailScreen(technician: tech),
-                        ),
-                      );
+                      if (widget.selectedService != null) {
+                        // Se há um serviço selecionado, vai direto para finalização
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ServiceRequestScreen(
+                              technician: tech,
+                              selectedService: widget.selectedService,
+                            ),
+                          ),
+                        );
+                      } else {
+                        // Senão, vai para detalhes do técnico
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TechnicianDetailScreen(technician: tech),
+                          ),
+                        );
+                      }
                     },
                     child: _TechnicianCard(
                       name: tech['name'],
@@ -195,6 +213,7 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
                       experience: tech['experience'],
                       available: tech['available'],
                       image: tech['image'],
+                      selectedService: widget.selectedService,
                     ),
                   );
                 },
@@ -236,6 +255,7 @@ class _TechnicianCard extends StatelessWidget {
   final String experience;
   final bool available;
   final String image;
+  final ServiceModel? selectedService;
 
   const _TechnicianCard({
     required this.name,
@@ -244,6 +264,7 @@ class _TechnicianCard extends StatelessWidget {
     required this.experience,
     required this.available,
     required this.image,
+    this.selectedService,
   });
 
   @override
@@ -357,12 +378,32 @@ class _TechnicianCard extends StatelessWidget {
               SizedBox(height: 8),
               ElevatedButton(
                 onPressed: available ? () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Solicitação enviada para $name'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
+                  if (selectedService != null) {
+                    // Se há um serviço selecionado, vai direto para finalização
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ServiceRequestScreen(
+                          technician: {
+                            'name': name,
+                            'specialty': specialty,
+                            'rating': rating,
+                            'experience': experience,
+                            'available': available,
+                            'image': image,
+                          },
+                          selectedService: selectedService,
+                        ),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Solicitação enviada para $name'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  }
                 } : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryPurple,
@@ -373,7 +414,7 @@ class _TechnicianCard extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  'Solicitar',
+                  selectedService != null ? 'Escolher' : 'Solicitar',
                   style: TextStyle(fontSize: 12),
                 ),
               ),

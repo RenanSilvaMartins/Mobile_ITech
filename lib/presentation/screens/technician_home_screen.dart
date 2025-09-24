@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import 'technician_requests_screen.dart';
 import 'technician_profile_screen.dart';
-import 'technician_earnings_screen.dart';
 
 class TechnicianHomeScreen extends StatefulWidget {
   const TechnicianHomeScreen({Key? key}) : super(key: key);
@@ -17,7 +16,6 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
 
   final List<Widget> _screens = [
     TechnicianRequestsScreen(),
-    TechnicianEarningsScreen(),
     TechnicianProfileScreen(),
   ];
 
@@ -66,10 +64,6 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.assignment),
             label: 'Solicitações',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.attach_money),
-            label: 'Ganhos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

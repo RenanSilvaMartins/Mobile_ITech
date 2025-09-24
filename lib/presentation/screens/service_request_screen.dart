@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/models/agendamento_model.dart';
+import '../../data/models/service_model.dart';
 import '../../data/services/agendamento_service.dart';
-import 'payment_screen.dart';
 
 class ServiceRequestScreen extends StatefulWidget {
   final Map<String, dynamic> technician;
+  final ServiceModel? selectedService;
 
-  const ServiceRequestScreen({Key? key, required this.technician}) : super(key: key);
+  const ServiceRequestScreen({Key? key, required this.technician, this.selectedService}) : super(key: key);
 
   @override
   State<ServiceRequestScreen> createState() => _ServiceRequestScreenState();
@@ -43,6 +44,15 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
     final urgency = urgencyLevels.firstWhere((u) => u['level'] == selectedUrgency);
     
     return service['price'] + double.parse(urgency['extra']!);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Se há um serviço pré-selecionado, define ele como selecionado
+    if (widget.selectedService != null) {
+      selectedService = widget.selectedService!.name;
+    }
   }
 
   @override
@@ -131,13 +141,35 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
             SizedBox(height: 24),
 
             // Seleção de serviço
-            Text(
-              'Selecione o Serviço',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: Colors.grey[800],
-              ),
+            Row(
+              children: [
+                Text(
+                  'Selecione o Serviço',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.grey[800],
+                  ),
+                ),
+                if (widget.selectedService != null) ...[
+                  SizedBox(width: 8),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryPurple.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'Pré-selecionado',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.primaryPurple,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
             ),
             SizedBox(height: 12),
             ...services.map((service) => _ServiceOption(
@@ -146,6 +178,7 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
               duration: service['duration'],
               isSelected: selectedService == service['name'],
               onTap: () => setState(() => selectedService = service['name']),
+              isPreSelected: widget.selectedService?.name == service['name'],
             )),
             SizedBox(height: 24),
 
@@ -257,22 +290,22 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
             SizedBox(height: 24),
 
             // Resumo e botão de continuar
-            if (selectedService != null && selectedUrgency != null && totalPrice > 0) ...[
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 10,
-                      offset: Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
+            Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  if (selectedService != null && selectedUrgency != null) ...[
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -294,31 +327,31 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
                       ],
                     ),
                     SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _canProceed() ? _proceedToPayment : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryPurple,
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                  ],
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _canProceed() ? _proceedToPayment : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _canProceed() ? AppColors.primaryPurple : Colors.grey,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Text(
-                          'Continuar para Pagamento',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
+                      ),
+                      child: Text(
+                        'Finalizar Solicitação',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
             SizedBox(height: 24),
           ],
         ),
@@ -331,8 +364,8 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
            selectedUrgency != null &&
            selectedDate != null &&
            selectedTime != null &&
-           _addressController.text.isNotEmpty &&
-           _descriptionController.text.isNotEmpty;
+           _addressController.text.trim().isNotEmpty &&
+           _descriptionController.text.trim().isNotEmpty;
   }
 
   void _proceedToPayment() async {
@@ -360,28 +393,21 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
       );
 
       // Criar agendamento na API
-      final agendamentoCriado = await AgendamentoService.criar(agendamento);
+      await AgendamentoService.criar(agendamento);
       
       // Fechar loading
       Navigator.pop(context);
 
-      // Ir para pagamento
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PaymentScreen(
-            technician: widget.technician,
-            service: selectedService!,
-            urgency: selectedUrgency!,
-            totalPrice: totalPrice,
-            date: selectedDate!,
-            time: selectedTime!,
-            address: _addressController.text,
-            description: _descriptionController.text,
-            agendamentoId: agendamentoCriado.id,
-          ),
+      // Mostrar sucesso e voltar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Solicitação enviada com sucesso!'),
+          backgroundColor: Colors.green,
         ),
       );
+      
+      // Voltar para tela anterior
+      Navigator.pop(context);
     } catch (e) {
       // Fechar loading se estiver aberto
       if (Navigator.canPop(context)) Navigator.pop(context);
@@ -425,6 +451,7 @@ class _ServiceOption extends StatelessWidget {
   final String duration;
   final bool isSelected;
   final VoidCallback onTap;
+  final bool isPreSelected;
 
   const _ServiceOption({
     required this.name,
@@ -432,6 +459,7 @@ class _ServiceOption extends StatelessWidget {
     required this.duration,
     required this.isSelected,
     required this.onTap,
+    this.isPreSelected = false,
   });
 
   @override
@@ -445,11 +473,30 @@ class _ServiceOption extends StatelessWidget {
           color: isSelected ? AppColors.primaryPurple : Colors.grey[300]!,
           width: 2,
         ),
+        boxShadow: isPreSelected ? [
+          BoxShadow(
+            color: AppColors.primaryPurple.withOpacity(0.2),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ] : null,
       ),
       child: ListTile(
-        title: Text(
-          name,
-          style: TextStyle(fontWeight: FontWeight.w600),
+        title: Row(
+          children: [
+            Text(
+              name,
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            if (isPreSelected) ...[
+              SizedBox(width: 8),
+              Icon(
+                Icons.star,
+                size: 16,
+                color: AppColors.primaryPurple,
+              ),
+            ],
+          ],
         ),
         subtitle: Text('Duração: $duration'),
         trailing: Text(
