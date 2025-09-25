@@ -92,50 +92,25 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: AppColors.modernGradient,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/imagens/logo_itech.png'),
+            fit: BoxFit.cover,
+          ),
         ),
         child: SafeArea(
           child: Column(
             children: [
               Expanded(
                 flex: 3,
-                child: Center(
-                  child: AnimatedBuilder(
-                    animation: _logoAnimation,
-                    builder: (context, child) {
-                      return Transform.scale(
-                        scale: _logoAnimation.value,
-                        child: Opacity(
-                          opacity: _logoAnimation.value.clamp(0.0, 1.0),
-                          child: Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 10),
-                                ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Image.asset(
-                                'assets/imagens/logo_itech.png',
-                                width: 120,
-                                height: 120,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                child: AnimatedBuilder(
+                  animation: _logoAnimation,
+                  builder: (context, child) {
+                    return Transform.scale(
+                      scale: _logoAnimation.value,
+                      child: Container(),
+                    );
+                  },
                 ),
               ),
               Expanded(
