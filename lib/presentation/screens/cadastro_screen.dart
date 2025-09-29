@@ -368,6 +368,10 @@ class _CadastroScreenState extends State<CadastroScreen> {
                               email: _emailController.text,
                               phone: _phoneController.text,
                               specialty: _specialtyController.text,
+                              cpfCnpj: '00000000000', // Valor padrão temporário
+                              dataNascimento: '1990-01-01', // Valor padrão temporário
+                              cep: '00000000', // Valor padrão temporário
+                              numeroResidencia: '0', // Valor padrão temporário
                             );
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(

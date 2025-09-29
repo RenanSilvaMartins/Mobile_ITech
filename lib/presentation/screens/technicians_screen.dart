@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/models/service_model.dart';
+import '../../data/models/technician_model.dart';
+import '../../controllers/technician_controller.dart';
 import 'technician_detail_screen.dart';
 import 'service_request_screen.dart';
 
@@ -17,65 +19,81 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _selectedFilter = 'Todos';
   String _searchQuery = '';
-  
-  final List<Map<String, dynamic>> _allTechnicians = [
-    {
-      'name': 'João Silva',
-      'specialty': 'Smartphones e Tablets',
-      'rating': 4.8,
-      'experience': '5 anos',
-      'available': true,
-      'image': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-    },
-    {
-      'name': 'Maria Santos',
-      'specialty': 'Notebooks e Desktops',
-      'rating': 4.9,
-      'experience': '7 anos',
-      'available': true,
-      'image': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
-    },
-    {
-      'name': 'Carlos Oliveira',
-      'specialty': 'Eletrônicos em Geral',
-      'rating': 4.7,
-      'experience': '3 anos',
-      'available': false,
-      'image': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-    },
-    {
-      'name': 'Ana Costa',
-      'specialty': 'Smartphones',
-      'rating': 4.9,
-      'experience': '4 anos',
-      'available': true,
-      'image': 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-    },
-  ];
+  List<TechnicianModel> _allTechnicians = [];
+  bool _isLoading = true;
+  String? _errorMessage;
 
-  List<Map<String, dynamic>> get _filteredTechnicians {
-    List<Map<String, dynamic>> filtered = _allTechnicians;
+  List<TechnicianModel> get _filteredTechnicians {
+    List<TechnicianModel> filtered = _allTechnicians;
     
     if (_selectedFilter != 'Todos') {
       if (_selectedFilter == 'Disponíveis') {
-        filtered = filtered.where((tech) => tech['available'] == true).toList();
+        filtered = filtered.where((tech) => tech.available == true).toList();
       } else {
         filtered = filtered.where((tech) => 
-          tech['specialty'].toLowerCase().contains(_selectedFilter.toLowerCase())
+          tech.specialty.toLowerCase().contains(_selectedFilter.toLowerCase())
         ).toList();
       }
     }
     
     if (_searchQuery.isNotEmpty) {
       filtered = filtered.where((tech) => 
-        tech['name'].toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        tech['specialty'].toLowerCase().contains(_searchQuery.toLowerCase())
+        tech.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+        tech.specialty.toLowerCase().contains(_searchQuery.toLowerCase())
       ).toList();
     }
     
     return filtered;
   }
   
+  @override
+  void initState() {
+    super.initState();
+    _loadTechnicians();
+  }
+
+  Future<void> _loadTechnicians() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+    
+    try {
+      print('Carregando técnicos da API: http://localhost:8082/tecnico');
+      final technicians = await TechnicianController.getAllTechnicians();
+      print('Técnicos carregados: ${technicians.length}');
+      
+      if (mounted) {
+        setState(() {
+          _allTechnicians = technicians;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Erro detalhado: $e');
+      if (mounted) {
+        setState(() {
+          _allTechnicians = [];
+          _errorMessage = 'Falha ao conectar com o servidor. Verifique se a API está rodando em http://localhost:8082/tecnico';
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Map<String, dynamic> _technicianToMap(TechnicianModel tech) {
+    return {
+      'name': tech.name,
+      'specialty': tech.especialidade,
+      'rating': tech.rating,
+      'experience': tech.experience,
+      'available': tech.available,
+      'image': tech.image,
+      'phone': tech.telefone,
+      'description': tech.descricao,
+    };
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -161,63 +179,81 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
             SizedBox(height: 16),
             // Technicians List
             Expanded(
-              child: _filteredTechnicians.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.search_off, size: 64, color: AppColors.textTertiary),
-                          SizedBox(height: 16),
-                          Text(
-                            'Nenhum técnico encontrado',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: AppColors.textSecondary,
-                              fontWeight: FontWeight.w500,
+              child: _isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : _errorMessage != null
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.error_outline, size: 64, color: AppColors.primaryRed),
+                              SizedBox(height: 16),
+                              Text(
+                                'Erro ao carregar técnicos',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: AppColors.textSecondary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: _loadTechnicians,
+                                child: Text('Tentar novamente'),
+                              ),
+                            ],
+                          ),
+                        )
+                      : _filteredTechnicians.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.search_off, size: 64, color: AppColors.textTertiary),
+                                  SizedBox(height: 16),
+                                  Text(
+                                    'Nenhum técnico encontrado',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: AppColors.textSecondary,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: _filteredTechnicians.length,
+                              itemBuilder: (context, index) {
+                                final tech = _filteredTechnicians[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    if (widget.selectedService != null) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ServiceRequestScreen(
+                                            technician: _technicianToMap(tech),
+                                            selectedService: widget.selectedService,
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => TechnicianDetailScreen(technician: _technicianToMap(tech)),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: _TechnicianCard(
+                                    technician: tech,
+                                    selectedService: widget.selectedService,
+                                  ),
+                                );
+                              },
                             ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount: _filteredTechnicians.length,
-                      itemBuilder: (context, index) {
-                        final tech = _filteredTechnicians[index];
-                  return GestureDetector(
-                    onTap: () {
-                      if (widget.selectedService != null) {
-                        // Se há um serviço selecionado, vai direto para finalização
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ServiceRequestScreen(
-                              technician: tech,
-                              selectedService: widget.selectedService,
-                            ),
-                          ),
-                        );
-                      } else {
-                        // Senão, vai para detalhes do técnico
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TechnicianDetailScreen(technician: tech),
-                          ),
-                        );
-                      }
-                    },
-                    child: _TechnicianCard(
-                      name: tech['name'],
-                      specialty: tech['specialty'],
-                      rating: tech['rating'],
-                      experience: tech['experience'],
-                      available: tech['available'],
-                      image: tech['image'],
-                      selectedService: widget.selectedService,
-                    ),
-                  );
-                },
-              ),
             ),
           ],
         ),
@@ -249,21 +285,11 @@ class _FilterChip extends StatelessWidget {
 }
 
 class _TechnicianCard extends StatelessWidget {
-  final String name;
-  final String specialty;
-  final double rating;
-  final String experience;
-  final bool available;
-  final String image;
+  final TechnicianModel technician;
   final ServiceModel? selectedService;
 
   const _TechnicianCard({
-    required this.name,
-    required this.specialty,
-    required this.rating,
-    required this.experience,
-    required this.available,
-    required this.image,
+    required this.technician,
     this.selectedService,
   });
 
@@ -290,11 +316,11 @@ class _TechnicianCard extends StatelessWidget {
               CircleAvatar(
                 radius: 30,
                 backgroundColor: AppColors.primaryPurple.withOpacity(0.1),
-                backgroundImage: NetworkImage(image),
+                backgroundImage: NetworkImage(technician.image),
                 onBackgroundImageError: (exception, stackTrace) {},
                 child: Container(),
               ),
-              if (available)
+              if (technician.available)
                 Positioned(
                   bottom: 0,
                   right: 0,
@@ -316,7 +342,7 @@ class _TechnicianCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  name,
+                  technician.name,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -324,7 +350,7 @@ class _TechnicianCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  specialty,
+                  technician.specialty,
                   style: TextStyle(
                     fontSize: 14,
                     color: AppColors.textSecondary,
@@ -336,7 +362,7 @@ class _TechnicianCard extends StatelessWidget {
                     Icon(Icons.star, color: Colors.amber, size: 16),
                     SizedBox(width: 4),
                     Text(
-                      rating.toString(),
+                      technician.rating.toString(),
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -347,7 +373,7 @@ class _TechnicianCard extends StatelessWidget {
                     Icon(Icons.work, color: AppColors.textTertiary, size: 16),
                     SizedBox(width: 4),
                     Text(
-                      experience,
+                      technician.experience,
                       style: TextStyle(
                         fontSize: 14,
                         color: AppColors.textSecondary,
@@ -363,13 +389,13 @@ class _TechnicianCard extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: available ? AppColors.primaryGreen.withOpacity(0.1) : AppColors.primaryRed.withOpacity(0.1),
+                  color: technician.available ? AppColors.primaryGreen.withOpacity(0.1) : AppColors.primaryRed.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  available ? 'Disponível' : 'Ocupado',
+                  technician.available ? 'Disponível' : 'Ocupado',
                   style: TextStyle(
-                    color: available ? AppColors.primaryGreen : AppColors.primaryRed,
+                    color: technician.available ? AppColors.primaryGreen : AppColors.primaryRed,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -377,20 +403,19 @@ class _TechnicianCard extends StatelessWidget {
               ),
               SizedBox(height: 8),
               ElevatedButton(
-                onPressed: available ? () {
+                onPressed: technician.available ? () {
                   if (selectedService != null) {
-                    // Se há um serviço selecionado, vai direto para finalização
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => ServiceRequestScreen(
                           technician: {
-                            'name': name,
-                            'specialty': specialty,
-                            'rating': rating,
-                            'experience': experience,
-                            'available': available,
-                            'image': image,
+                            'name': technician.name,
+                            'specialty': technician.specialty,
+                            'rating': technician.rating,
+                            'experience': technician.experience,
+                            'available': technician.available,
+                            'image': technician.image,
                           },
                           selectedService: selectedService,
                         ),
@@ -399,7 +424,7 @@ class _TechnicianCard extends StatelessWidget {
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Solicitação enviada para $name'),
+                        content: Text('Solicitação enviada para ${technician.name}'),
                         backgroundColor: Colors.green,
                       ),
                     );

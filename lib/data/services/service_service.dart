@@ -79,11 +79,12 @@ class ServiceService {
     ).toList();
   }
 
-  List<TechnicianModel> getTechniciansForService(String serviceId) {
+  Future<List<TechnicianModel>> getTechniciansForService(String serviceId) async {
     final service = _services.firstWhere((s) => s.id == serviceId);
     final technicianService = TechnicianService();
     
-    return technicianService.getAvailableTechnicians().where((technician) {
+    final technicians = await technicianService.getAvailableTechnicians();
+    return technicians.where((technician) {
       // Verifica se o técnico tem a especialidade necessária
       return technician.specialty.toLowerCase().contains(service.requiredSpecialty.toLowerCase()) ||
              service.requiredSpecialty == 'Geral';

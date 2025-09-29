@@ -8,33 +8,49 @@ class TechnicianController {
   // GET - Buscar todos os técnicos
   static Future<List<TechnicianModel>> getAllTechnicians() async {
     try {
-      final response = await http.get(Uri.parse(baseUrl));
+      print('Fazendo requisição para: $baseUrl');
+      final response = await http.get(
+        Uri.parse(baseUrl),
+        headers: {'Content-Type': 'application/json'},
+      );
+      
+      print('Status da resposta: ${response.statusCode}');
+      print('Corpo da resposta: ${response.body}');
       
       if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        return data.map((json) => TechnicianModel.fromJson(json)).toList();
+        final dynamic responseData = json.decode(response.body);
+        
+        if (responseData is List) {
+          return responseData.map((json) => TechnicianModel.fromJson(json)).toList();
+        } else {
+          throw Exception('Formato de resposta inválido: esperado List, recebido ${responseData.runtimeType}');
+        }
       } else {
-        throw Exception('Erro ao buscar técnicos: ${response.statusCode}');
+        throw Exception('Erro HTTP ${response.statusCode}: ${response.body}');
       }
     } catch (e) {
-      throw Exception('Erro de conexão: $e');
+      print('Erro na requisição: $e');
+      rethrow;
     }
   }
 
   // GET - Buscar técnico por ID
   static Future<TechnicianModel?> getTechnicianById(String id) async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/$id'));
+      final response = await http.get(
+        Uri.parse('$baseUrl/$id'),
+        headers: {'Content-Type': 'application/json'},
+      );
       
       if (response.statusCode == 200) {
         return TechnicianModel.fromJson(json.decode(response.body));
       } else if (response.statusCode == 404) {
         return null;
       } else {
-        throw Exception('Erro ao buscar técnico: ${response.statusCode}');
+        throw Exception('Erro HTTP ${response.statusCode}: ${response.body}');
       }
     } catch (e) {
-      throw Exception('Erro de conexão: $e');
+      rethrow;
     }
   }
 
