@@ -8,10 +8,10 @@ class AgendamentosTecnicoScreen extends StatefulWidget {
   final String tecnicoNome;
 
   const AgendamentosTecnicoScreen({
-    Key? key,
+    super.key,
     required this.tecnicoId,
     required this.tecnicoNome,
-  }) : super(key: key);
+  });
 
   @override
   State<AgendamentosTecnicoScreen> createState() => _AgendamentosTecnicoScreenState();

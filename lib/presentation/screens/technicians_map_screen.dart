@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 
 class TechniciansMapScreen extends StatefulWidget {
-  const TechniciansMapScreen({Key? key}) : super(key: key);
+  const TechniciansMapScreen({super.key});
 
   @override
   State<TechniciansMapScreen> createState() => _TechniciansMapScreenState();

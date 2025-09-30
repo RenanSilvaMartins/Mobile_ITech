@@ -19,7 +19,7 @@ class PaymentScreen extends StatefulWidget {
   final String? agendamentoId;
 
   const PaymentScreen({
-    Key? key,
+    super.key,
     required this.technician,
     required this.service,
     required this.urgency,
@@ -29,7 +29,7 @@ class PaymentScreen extends StatefulWidget {
     required this.address,
     required this.description,
     this.agendamentoId,
-  }) : super(key: key);
+  });
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();

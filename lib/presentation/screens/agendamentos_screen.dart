@@ -5,7 +5,7 @@ import '../../data/services/agendamento_service.dart';
 import 'editar_agendamento_screen.dart';
 
 class AgendamentosScreen extends StatefulWidget {
-  const AgendamentosScreen({Key? key}) : super(key: key);
+  const AgendamentosScreen({super.key});
 
   @override
   State<AgendamentosScreen> createState() => _AgendamentosScreenState();

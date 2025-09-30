@@ -14,7 +14,7 @@ import '../../data/services/user_service.dart';
 import '../../data/services/technician_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _loadSavedCredentials();
   }
 
-  _loadSavedCredentials() async {
+  Future<void> _loadSavedCredentials() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _emailController.text = prefs.getString('saved_email') ?? '';
@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  _saveCredentials() async {
+  Future<void> _saveCredentials() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (_rememberMe) {
       await prefs.setString('saved_email', _emailController.text);

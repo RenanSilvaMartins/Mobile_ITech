@@ -4,7 +4,7 @@ import 'technician_requests_screen.dart';
 import 'technician_profile_screen.dart';
 
 class TechnicianHomeScreen extends StatefulWidget {
-  const TechnicianHomeScreen({Key? key}) : super(key: key);
+  const TechnicianHomeScreen({super.key});
 
   @override
   State<TechnicianHomeScreen> createState() => _TechnicianHomeScreenState();

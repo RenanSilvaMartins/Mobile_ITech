@@ -3,6 +3,8 @@ import '../data/models/service_model.dart';
 import 'service_controller.dart';
 
 class ServiceControllerExample extends StatefulWidget {
+  const ServiceControllerExample({super.key});
+
   @override
   _ServiceControllerExampleState createState() => _ServiceControllerExampleState();
 }

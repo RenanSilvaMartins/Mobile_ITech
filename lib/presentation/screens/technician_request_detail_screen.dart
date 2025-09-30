@@ -6,9 +6,9 @@ class TechnicianRequestDetailScreen extends StatefulWidget {
   final Map<String, dynamic> request;
 
   const TechnicianRequestDetailScreen({
-    Key? key,
+    super.key,
     required this.request,
-  }) : super(key: key);
+  });
 
   @override
   State<TechnicianRequestDetailScreen> createState() => _TechnicianRequestDetailScreenState();

@@ -3,6 +3,8 @@ import '../data/models/technician_model.dart';
 import 'technician_controller.dart';
 
 class TechnicianControllerExample extends StatefulWidget {
+  const TechnicianControllerExample({super.key});
+
   @override
   _TechnicianControllerExampleState createState() => _TechnicianControllerExampleState();
 }

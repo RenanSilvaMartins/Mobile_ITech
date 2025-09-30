@@ -6,7 +6,7 @@ import '../../controllers/technician_controller.dart';
 import 'login_screen.dart';
 
 class TechnicianProfileScreen extends StatefulWidget {
-  const TechnicianProfileScreen({Key? key}) : super(key: key);
+  const TechnicianProfileScreen({super.key});
 
   @override
   State<TechnicianProfileScreen> createState() => _TechnicianProfileScreenState();
@@ -372,7 +372,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Especialidades'),
-        content: Container(
+        content: SizedBox(
           width: double.maxFinite,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -436,7 +436,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Preços dos Serviços'),
-        content: Container(
+        content: SizedBox(
           width: double.maxFinite,
           child: Column(
             mainAxisSize: MainAxisSize.min,

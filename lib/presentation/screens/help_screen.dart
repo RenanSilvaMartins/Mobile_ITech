@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 
 class HelpScreen extends StatelessWidget {
-  final List<Map<String, String>> faqs = [
+  static const List<Map<String, String>> faqs = [
     {
       'question': 'Como solicitar um serviço?',
       'answer': 'Vá até a aba Serviços e clique em "Solicitar" no serviço desejado.',
@@ -16,6 +16,8 @@ class HelpScreen extends StatelessWidget {
       'answer': 'Acesse "Histórico de Serviços" no seu perfil para ver o status.',
     },
   ];
+
+  const HelpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

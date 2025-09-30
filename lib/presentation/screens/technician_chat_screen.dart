@@ -6,10 +6,10 @@ class TechnicianChatScreen extends StatefulWidget {
   final String requestId;
 
   const TechnicianChatScreen({
-    Key? key,
+    super.key,
     required this.clientName,
     required this.requestId,
-  }) : super(key: key);
+  });
 
   @override
   State<TechnicianChatScreen> createState() => _TechnicianChatScreenState();
@@ -19,7 +19,7 @@ class _TechnicianChatScreenState extends State<TechnicianChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
-  List<Map<String, dynamic>> _messages = [
+  final List<Map<String, dynamic>> _messages = [
     {
       'id': '1',
       'text': 'Olá! Recebi sua solicitação de reparo. Posso chegar aí em 30 minutos.',

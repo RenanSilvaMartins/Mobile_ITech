@@ -7,9 +7,9 @@ class EditarAgendamentoScreen extends StatefulWidget {
   final String agendamentoId;
 
   const EditarAgendamentoScreen({
-    Key? key,
+    super.key,
     required this.agendamentoId,
-  }) : super(key: key);
+  });
 
   @override
   State<EditarAgendamentoScreen> createState() => _EditarAgendamentoScreenState();

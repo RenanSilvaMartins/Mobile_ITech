@@ -4,6 +4,8 @@ import '../../data/services/service_request_service.dart';
 import '../../data/models/service_request_model.dart';
 
 class ServiceHistoryScreen extends StatefulWidget {
+  const ServiceHistoryScreen({super.key});
+
   @override
   State<ServiceHistoryScreen> createState() => _ServiceHistoryScreenState();
 }

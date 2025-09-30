@@ -6,7 +6,7 @@ import 'reset_password_screen.dart';
 class VerificationCodeScreen extends StatefulWidget {
   final String email;
   
-  const VerificationCodeScreen({Key? key, required this.email}) : super(key: key);
+  const VerificationCodeScreen({super.key, required this.email});
 
   @override
   State<VerificationCodeScreen> createState() => _VerificationCodeScreenState();

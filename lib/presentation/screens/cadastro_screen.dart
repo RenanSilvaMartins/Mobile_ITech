@@ -9,7 +9,7 @@ import '../../data/services/technician_service.dart';
 import 'home_screen.dart';
 
 class CadastroScreen extends StatefulWidget {
-  const CadastroScreen({Key? key}) : super(key: key);
+  const CadastroScreen({super.key});
 
   @override
   State<CadastroScreen> createState() => _CadastroScreenState();

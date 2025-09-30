@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 
 class TechnicianEarningsScreen extends StatefulWidget {
-  const TechnicianEarningsScreen({Key? key}) : super(key: key);
+  const TechnicianEarningsScreen({super.key});
 
   @override
   State<TechnicianEarningsScreen> createState() => _TechnicianEarningsScreenState();
@@ -350,7 +350,7 @@ class _TechnicianEarningsScreenState extends State<TechnicianEarningsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Histórico de Pagamentos'),
-        content: Container(
+        content: SizedBox(
           width: double.maxFinite,
           child: Column(
             mainAxisSize: MainAxisSize.min,

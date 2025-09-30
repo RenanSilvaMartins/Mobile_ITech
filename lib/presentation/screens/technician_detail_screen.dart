@@ -6,7 +6,7 @@ import 'technicians_map_screen.dart';
 class TechnicianDetailScreen extends StatefulWidget {
   final Map<String, dynamic> technician;
 
-  const TechnicianDetailScreen({Key? key, required this.technician}) : super(key: key);
+  const TechnicianDetailScreen({super.key, required this.technician});
 
   @override
   State<TechnicianDetailScreen> createState() => _TechnicianDetailScreenState();

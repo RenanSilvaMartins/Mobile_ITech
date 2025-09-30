@@ -9,7 +9,7 @@ import 'service_request_screen.dart';
 class TechniciansScreen extends StatefulWidget {
   final ServiceModel? selectedService;
   
-  const TechniciansScreen({Key? key, this.selectedService}) : super(key: key);
+  const TechniciansScreen({super.key, this.selectedService});
   
   @override
   State<TechniciansScreen> createState() => _TechniciansScreenState();

@@ -3,7 +3,7 @@ import '../../core/constants/app_colors.dart';
 import 'technician_request_detail_screen.dart';
 
 class TechnicianRequestsScreen extends StatefulWidget {
-  const TechnicianRequestsScreen({Key? key}) : super(key: key);
+  const TechnicianRequestsScreen({super.key});
 
   @override
   State<TechnicianRequestsScreen> createState() => _TechnicianRequestsScreenState();

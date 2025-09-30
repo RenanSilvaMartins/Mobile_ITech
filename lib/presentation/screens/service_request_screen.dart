@@ -8,7 +8,7 @@ class ServiceRequestScreen extends StatefulWidget {
   final Map<String, dynamic> technician;
   final ServiceModel? selectedService;
 
-  const ServiceRequestScreen({Key? key, required this.technician, this.selectedService}) : super(key: key);
+  const ServiceRequestScreen({super.key, required this.technician, this.selectedService});
 
   @override
   State<ServiceRequestScreen> createState() => _ServiceRequestScreenState();

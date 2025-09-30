@@ -9,7 +9,7 @@ import '../../data/services/user_service.dart';
 import '../../data/services/service_request_service.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -83,6 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class HomeContent extends StatefulWidget {
+  const HomeContent({super.key});
+
   @override
   State<HomeContent> createState() => _HomeContentState();
 }
@@ -370,7 +372,7 @@ class _HomeContentState extends State<HomeContent> {
                         date: '${service.date.day}/${service.date.month}/${service.date.year}',
                         statusColor: service.status == 'Concluído' ? Colors.green : Colors.orange,
                       ),
-                    ).toList(),
+                    ),
                   ],
                 ),
               ),
