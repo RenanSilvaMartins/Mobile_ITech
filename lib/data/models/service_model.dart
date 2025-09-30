@@ -1,44 +1,66 @@
 class ServiceModel {
-  final String id;
-  final String name;
-  final double price;
-  final String duration;
-  final String description;
-  final String category;
-  final String requiredSpecialty;
+  final int id;
+  final String nome;
+  final String duracao;
+  final double preco;
+  final String tipo;
+  
+  // Campos para compatibilidade com a UI
+  final String? description;
+  final String? requiredSpecialty;
 
   ServiceModel({
     required this.id,
-    required this.name,
-    required this.price,
-    required this.duration,
-    required this.description,
-    required this.category,
-    required this.requiredSpecialty,
+    required this.nome,
+    required this.duracao,
+    required this.preco,
+    required this.tipo,
+    this.description,
+    this.requiredSpecialty,
   });
+
+  // Getters para compatibilidade com a UI existente
+  String get name => nome;
+  double get price => preco;
+  String get duration => duracao;
+  String get category => tipo;
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
     return ServiceModel(
-      id: json['id'],
-      name: json['name'],
-      price: json['price'].toDouble(),
-      duration: json['duration'],
-      description: json['description'],
-      category: json['category'],
-      requiredSpecialty: json['requiredSpecialty'],
+      id: _parseInt(json['id']),
+      nome: json['nome']?.toString() ?? '',
+      duracao: json['duracao']?.toString() ?? '',
+      preco: _parseDouble(json['preco']),
+      tipo: json['tipo']?.toString() ?? '',
+      description: json['description']?.toString(),
+      requiredSpecialty: json['requiredSpecialty']?.toString() ?? json['tipo']?.toString(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
-      'price': price,
-      'duration': duration,
-      'description': description,
-      'category': category,
-      'requiredSpecialty': requiredSpecialty,
+      if (id != 0) 'id': id,
+      'nome': nome,
+      'duracao': duracao,
+      'preco': preco,
+      'tipo': tipo,
     };
+  }
+
+  static int _parseInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
+  }
+
+  static double _parseDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
   }
 }
 

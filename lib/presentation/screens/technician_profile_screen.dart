@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/services/technician_service.dart';
+import '../../data/models/technician_model.dart';
+import '../../controllers/technician_controller.dart';
 import 'login_screen.dart';
 
 class TechnicianProfileScreen extends StatefulWidget {
@@ -13,9 +15,38 @@ class TechnicianProfileScreen extends StatefulWidget {
 class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> {
   bool _isAvailable = true;
   bool _notificationsEnabled = true;
+  TechnicianModel? _currentTechnician;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTechnicianData();
+  }
+
+  Future<void> _loadTechnicianData() async {
+    try {
+      final technicians = await TechnicianController.getAllTechnicians();
+      if (technicians.isNotEmpty) {
+        setState(() {
+          _currentTechnician = technicians.first; // For demo, use first technician
+          _isAvailable = _currentTechnician?.available ?? true;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(16),
       child: Column(
@@ -45,7 +76,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    TechnicianService().currentTechnician?.name ?? 'Técnico',
+                    _currentTechnician?.name ?? 'Técnico',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 24,
@@ -54,7 +85,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    TechnicianService().currentTechnician?.specialty ?? 'Especialista',
+                    _currentTechnician?.specialty ?? 'Especialista',
                     style: TextStyle(
                       color: Colors.white70,
                       fontSize: 16,
@@ -64,9 +95,9 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _buildStatItem('Avaliação', '${TechnicianService().currentTechnician?.rating.toStringAsFixed(1) ?? '0.0'} ⭐'),
-                      _buildStatItem('Serviços', '${TechnicianService().currentTechnician?.completedServices ?? 0}'),
-                      _buildStatItem('Experiência', TechnicianService().currentTechnician?.experience ?? '0 anos'),
+                      _buildStatItem('Avaliação', '${_currentTechnician?.rating.toStringAsFixed(1) ?? '0.0'} ⭐'),
+                      _buildStatItem('Serviços', '${_currentTechnician?.completedServices ?? 0}'),
+                      _buildStatItem('Experiência', _currentTechnician?.experience ?? '0 anos'),
                     ],
                   ),
                 ],

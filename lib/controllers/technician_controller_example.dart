@@ -35,21 +35,20 @@ class _TechnicianControllerExampleState extends State<TechnicianControllerExampl
   // Exemplo: Criar novo técnico
   Future<void> _createTechnician() async {
     final newTechnician = TechnicianModel(
-      id: '', // ID será gerado pelo backend
+      id: 0,
+      cpfCnpj: '123.456.789-00',
+      dataNascimento: '1990-01-01',
+      telefone: '(11) 99999-9999',
+      cep: '01234-567',
+      numeroResidencia: '123',
+      complemento: 'Apto 45',
+      descricao: 'Técnico especializado em hardware',
+      especialidade: 'Hardware',
+      usuarioId: 1,
+      statusTecnico: 'Ativo',
       name: 'Novo Técnico',
-      specialty: 'Hardware',
-      rating: 0.0,
-      experience: '1 ano',
-      available: true,
-      image: '',
-      phone: '(11) 99999-9999',
       email: 'novo@email.com',
-      services: ['Reparo'],
-      latitude: -23.5505,
-      longitude: -46.6333,
-      address: 'São Paulo, SP',
-      reviews: [],
-      completedServices: 0,
+      image: '',
     );
 
     try {
@@ -95,7 +94,7 @@ class _TechnicianControllerExampleState extends State<TechnicianControllerExampl
                   subtitle: Text(tech.specialty),
                   trailing: IconButton(
                     icon: Icon(Icons.delete),
-                    onPressed: () => _deleteTechnician(tech.id),
+                    onPressed: () => _deleteTechnician(tech.id.toString()),
                   ),
                 );
               },

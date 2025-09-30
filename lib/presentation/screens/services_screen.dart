@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
-import '../../data/services/service_service.dart';
 import '../../data/models/service_model.dart';
-import '../../data/models/technician_model.dart';
+import '../../controllers/service_controller.dart';
 
 class ServicesScreen extends StatefulWidget {
   const ServicesScreen({Key? key}) : super(key: key);
@@ -15,7 +14,44 @@ class _ServicesScreenState extends State<ServicesScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _selectedCategory = 'Todos';
   String _searchQuery = '';
-  final ServiceService _serviceService = ServiceService();
+  List<ServiceModel> _allServices = [];
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadServices();
+  }
+
+  Future<void> _loadServices() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+    
+    try {
+      print('Carregando serviços da API: http://localhost:8082/servico');
+      final services = await ServiceController.getAllServices();
+      print('Serviços carregados: ${services.length}');
+      
+      if (mounted) {
+        setState(() {
+          _allServices = services;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Erro detalhado: $e');
+      if (mounted) {
+        setState(() {
+          _allServices = [];
+          _errorMessage = 'Falha ao conectar com o servidor. Verifique se a API está rodando em http://localhost:8082/servico';
+          _isLoading = false;
+        });
+      }
+    }
+  }
   
   final Map<String, IconData> _categoryIcons = {
     'Smartphone': Icons.phone_android,
@@ -25,7 +61,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
   };
 
   List<ServiceModel> get _filteredServices {
-    List<ServiceModel> filtered = _serviceService.getAllServices();
+    List<ServiceModel> filtered = _allServices;
     
     if (_selectedCategory != 'Todos') {
       filtered = filtered.where((service) => 
@@ -36,7 +72,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
     if (_searchQuery.isNotEmpty) {
       filtered = filtered.where((service) => 
         service.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        service.description.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+        (service.description?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false) ||
         service.category.toLowerCase().contains(_searchQuery.toLowerCase())
       ).toList();
     }
@@ -132,24 +168,49 @@ class _ServicesScreenState extends State<ServicesScreen> {
             SizedBox(height: 16),
             // Services Grid
             Expanded(
-              child: _filteredServices.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.search_off, size: 64, color: AppColors.textTertiary),
-                          SizedBox(height: 16),
-                          Text(
-                            'Nenhum serviço encontrado',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: AppColors.textSecondary,
-                              fontWeight: FontWeight.w500,
-                            ),
+              child: _isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : _errorMessage != null
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.error_outline, size: 64, color: AppColors.primaryRed),
+                              SizedBox(height: 16),
+                              Text(
+                                'Erro ao carregar serviços',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: AppColors.textSecondary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: _loadServices,
+                                child: Text('Tentar novamente'),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )
+                        )
+                      : _filteredServices.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.search_off, size: 64, color: AppColors.textTertiary),
+                                  SizedBox(height: 16),
+                                  Text(
+                                    'Nenhum serviço encontrado',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: AppColors.textSecondary,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
                   : AnimatedSwitcher(
                       duration: Duration(milliseconds: 300),
                       transitionBuilder: (child, animation) {
@@ -384,7 +445,7 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
                   ),
                   SizedBox(height: 4),
                   Text(
-                    widget.service.description,
+                    widget.service.description ?? 'Serviço de ${widget.service.category}',
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColors.textSecondary,

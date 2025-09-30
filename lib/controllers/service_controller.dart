@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../data/models/technician_model.dart';
+import '../data/models/service_model.dart';
 
-class TechnicianController {
-  static const String baseUrl = 'http://localhost:8082/tecnico';
+class ServiceController {
+  static const String baseUrl = 'http://localhost:8082/servico';
   
-  // GET - Buscar todos os técnicos
-  static Future<List<TechnicianModel>> getAllTechnicians() async {
+  // GET - Buscar todos os serviços
+  static Future<List<ServiceModel>> getAllServices() async {
     try {
       print('Fazendo requisição para: $baseUrl');
       final response = await http.get(
@@ -21,7 +21,7 @@ class TechnicianController {
         final dynamic responseData = json.decode(response.body);
         
         if (responseData is List) {
-          return responseData.map((json) => TechnicianModel.fromJson(json)).toList();
+          return responseData.map((json) => ServiceModel.fromJson(json)).toList();
         } else {
           throw Exception('Formato de resposta inválido: esperado List, recebido ${responseData.runtimeType}');
         }
@@ -34,8 +34,8 @@ class TechnicianController {
     }
   }
 
-  // GET - Buscar técnico por ID
-  static Future<TechnicianModel?> getTechnicianById(String id) async {
+  // GET - Buscar serviço por ID
+  static Future<ServiceModel?> getServiceById(String id) async {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/$id'),
@@ -43,7 +43,7 @@ class TechnicianController {
       );
       
       if (response.statusCode == 200) {
-        return TechnicianModel.fromJson(json.decode(response.body));
+        return ServiceModel.fromJson(json.decode(response.body));
       } else if (response.statusCode == 404) {
         return null;
       } else {
@@ -54,56 +54,56 @@ class TechnicianController {
     }
   }
 
-  // POST - Criar novo técnico
-  static Future<TechnicianModel> createTechnician(TechnicianModel technician) async {
+  // POST - Criar novo serviço
+  static Future<ServiceModel> createService(ServiceModel service) async {
     try {
-      final technicianJson = technician.toJson();
-      print('Enviando dados: ${json.encode(technicianJson)}');
+      final serviceJson = service.toJson();
+      print('Enviando dados: ${json.encode(serviceJson)}');
       
       final response = await http.post(
         Uri.parse(baseUrl),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode(technicianJson),
+        body: json.encode(serviceJson),
       );
       
       if (response.statusCode == 201) {
-        return TechnicianModel.fromJson(json.decode(response.body));
+        return ServiceModel.fromJson(json.decode(response.body));
       } else {
-        throw Exception('Erro ao criar técnico: ${response.statusCode}');
+        throw Exception('Erro ao criar serviço: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Erro de conexão: $e');
     }
   }
 
-  // PUT - Atualizar técnico
-  static Future<TechnicianModel> updateTechnician(String id, TechnicianModel technician) async {
+  // PUT - Atualizar serviço
+  static Future<ServiceModel> updateService(String id, ServiceModel service) async {
     try {
       final response = await http.put(
         Uri.parse('$baseUrl/$id'),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode(technician.toJson()),
+        body: json.encode(service.toJson()),
       );
       
       if (response.statusCode == 200) {
-        return TechnicianModel.fromJson(json.decode(response.body));
+        return ServiceModel.fromJson(json.decode(response.body));
       } else {
-        throw Exception('Erro ao atualizar técnico: ${response.statusCode}');
+        throw Exception('Erro ao atualizar serviço: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Erro de conexão: $e');
     }
   }
 
-  // DELETE - Deletar técnico
-  static Future<bool> deleteTechnician(String id) async {
+  // DELETE - Deletar serviço
+  static Future<bool> deleteService(String id) async {
     try {
       final response = await http.delete(Uri.parse('$baseUrl/$id'));
       
       if (response.statusCode == 200 || response.statusCode == 204) {
         return true;
       } else {
-        throw Exception('Erro ao deletar técnico: ${response.statusCode}');
+        throw Exception('Erro ao deletar serviço: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Erro de conexão: $e');

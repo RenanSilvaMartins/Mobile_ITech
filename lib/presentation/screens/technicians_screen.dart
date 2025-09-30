@@ -88,7 +88,7 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
       'rating': tech.rating,
       'experience': tech.experience,
       'available': tech.available,
-      'image': tech.image,
+      'image': tech.image.isNotEmpty ? tech.image : 'https://via.placeholder.com/150',
       'phone': tech.telefone,
       'description': tech.descricao,
     };

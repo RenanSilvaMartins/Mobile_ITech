@@ -9,57 +9,57 @@ class ServiceService {
 
   static final List<ServiceModel> _services = [
     ServiceModel(
-      id: '1',
-      name: 'Reparo de Tela',
-      price: 150.00,
-      duration: '2-3 horas',
+      id: 1,
+      nome: 'Reparo de Tela',
+      preco: 150.00,
+      duracao: '2-3 horas',
+      tipo: 'Smartphone',
       description: 'Troca de tela quebrada ou com defeito',
-      category: 'Smartphone',
       requiredSpecialty: 'Smartphones',
     ),
     ServiceModel(
-      id: '2',
-      name: 'Formatação',
-      price: 80.00,
-      duration: '1-2 horas',
+      id: 2,
+      nome: 'Formatação',
+      preco: 80.00,
+      duracao: '1-2 horas',
+      tipo: 'Notebook',
       description: 'Formatação completa do sistema',
-      category: 'Notebook',
       requiredSpecialty: 'Notebooks',
     ),
     ServiceModel(
-      id: '3',
-      name: 'Troca de Bateria',
-      price: 120.00,
-      duration: '1 hora',
+      id: 3,
+      nome: 'Troca de Bateria',
+      preco: 120.00,
+      duracao: '1 hora',
+      tipo: 'Smartphone',
       description: 'Substituição de bateria viciada',
-      category: 'Smartphone',
       requiredSpecialty: 'Smartphones',
     ),
     ServiceModel(
-      id: '4',
-      name: 'Limpeza Interna',
-      price: 60.00,
-      duration: '1 hora',
+      id: 4,
+      nome: 'Limpeza Interna',
+      preco: 60.00,
+      duracao: '1 hora',
+      tipo: 'Desktop',
       description: 'Limpeza completa de componentes',
-      category: 'Desktop',
       requiredSpecialty: 'Desktops',
     ),
     ServiceModel(
-      id: '5',
-      name: 'Recuperação de Dados',
-      price: 200.00,
-      duration: '2-4 horas',
+      id: 5,
+      nome: 'Recuperação de Dados',
+      preco: 200.00,
+      duracao: '2-4 horas',
+      tipo: 'Geral',
       description: 'Recuperação de arquivos perdidos',
-      category: 'Geral',
       requiredSpecialty: 'Notebooks',
     ),
     ServiceModel(
-      id: '6',
-      name: 'Instalação de Software',
-      price: 40.00,
-      duration: '30 min',
+      id: 6,
+      nome: 'Instalação de Software',
+      preco: 40.00,
+      duracao: '30 min',
+      tipo: 'Geral',
       description: 'Instalação e configuração de programas',
-      category: 'Geral',
       requiredSpecialty: 'Geral',
     ),
   ];
@@ -80,7 +80,7 @@ class ServiceService {
   }
 
   Future<List<TechnicianModel>> getTechniciansForService(String serviceId) async {
-    final service = _services.firstWhere((s) => s.id == serviceId);
+    final service = _services.firstWhere((s) => s.id.toString() == serviceId);
     final technicianService = TechnicianService();
     
     final technicians = await technicianService.getAvailableTechnicians();
@@ -93,7 +93,7 @@ class ServiceService {
 
   ServiceModel? getServiceById(String id) {
     try {
-      return _services.firstWhere((service) => service.id == id);
+      return _services.firstWhere((service) => service.id.toString() == id);
     } catch (e) {
       return null;
     }
@@ -102,7 +102,7 @@ class ServiceService {
   List<ServiceModel> searchServices(String query) {
     return _services.where((service) =>
       service.name.toLowerCase().contains(query.toLowerCase()) ||
-      service.description.toLowerCase().contains(query.toLowerCase()) ||
+      (service.description?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
       service.category.toLowerCase().contains(query.toLowerCase())
     ).toList();
   }

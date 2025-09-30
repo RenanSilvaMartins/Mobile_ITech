@@ -57,17 +57,17 @@ class TechnicianModel {
       complemento: json['complemento']?.toString() ?? '',
       descricao: json['descricao']?.toString() ?? '',
       especialidade: json['especialidade']?.toString() ?? '',
-      usuarioId: _parseInt(json['usuario_id']),
+      usuarioId: _parseInt(json['usuario_id'] ?? json['usuario']?['id']),
       statusTecnico: json['statusTecnico']?.toString() ?? '',
-      name: json['name']?.toString() ?? json['usuario_nome']?.toString() ?? 'Técnico',
-      email: json['email']?.toString() ?? json['usuario_email']?.toString() ?? '',
+      name: json['name']?.toString() ?? json['usuario']?['nome']?.toString() ?? 'Técnico',
+      email: json['email']?.toString() ?? json['usuario']?['email']?.toString() ?? '',
       image: json['image']?.toString() ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      if (id != 0) 'id': id,
       'cpf_cnpj': cpfCnpj,
       'dataNascimento': dataNascimento,
       'telefone': telefone,

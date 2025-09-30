@@ -3,7 +3,7 @@
 import 'data/services/service_service.dart';
 import 'data/services/technician_service.dart';
 
-void demonstrateServiceTechnicianAssociation() {
+Future<void> demonstrateServiceTechnicianAssociation() async {
   final serviceService = ServiceService();
   final technicianService = TechnicianService();
 
@@ -20,7 +20,7 @@ void demonstrateServiceTechnicianAssociation() {
 
   // Para cada serviço, mostrar quais técnicos podem realizá-lo
   for (var service in allServices) {
-    final qualifiedTechnicians = serviceService.getTechniciansForService(service.id);
+    final qualifiedTechnicians = await serviceService.getTechniciansForService(service.id);
     
     print('SERVIÇO: ${service.name}');
     print('Especialidade necessária: ${service.requiredSpecialty}');
