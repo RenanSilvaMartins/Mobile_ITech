@@ -20,7 +20,7 @@ Future<void> demonstrateServiceTechnicianAssociation() async {
 
   // Para cada serviço, mostrar quais técnicos podem realizá-lo
   for (var service in allServices) {
-    final qualifiedTechnicians = await serviceService.getTechniciansForService(service.id);
+    final qualifiedTechnicians = await serviceService.getTechniciansForService(service.id.toString());
     
     print('SERVIÇO: ${service.name}');
     print('Especialidade necessária: ${service.requiredSpecialty}');
@@ -43,7 +43,7 @@ Future<void> demonstrateServiceTechnicianAssociation() async {
   
   for (var specialty in specialties) {
     final servicesForSpecialty = serviceService.getServicesBySpecialty(specialty);
-    final techniciansForSpecialty = technicianService.filterBySpecialty(specialty);
+    final techniciansForSpecialty = await technicianService.filterBySpecialty(specialty);
     
     print('ESPECIALIDADE: $specialty');
     print('Serviços disponíveis:');

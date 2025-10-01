@@ -74,7 +74,7 @@ class ServiceService {
 
   List<ServiceModel> getServicesBySpecialty(String specialty) {
     return _services.where((service) => 
-      service.requiredSpecialty.toLowerCase().contains(specialty.toLowerCase()) ||
+      service.requiredSpecialty?.toLowerCase().contains(specialty.toLowerCase()) == true ||
       service.requiredSpecialty == 'Geral'
     ).toList();
   }
@@ -86,7 +86,7 @@ class ServiceService {
     final technicians = await technicianService.getAvailableTechnicians();
     return technicians.where((technician) {
       // Verifica se o técnico tem a especialidade necessária
-      return technician.specialty.toLowerCase().contains(service.requiredSpecialty.toLowerCase()) ||
+      return technician.specialty.toLowerCase().contains(service.requiredSpecialty?.toLowerCase() ?? '') ||
              service.requiredSpecialty == 'Geral';
     }).toList();
   }

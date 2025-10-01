@@ -39,7 +39,7 @@ class TechnicianModel {
   String get experience => '${DateTime.now().year - DateTime.parse(dataNascimento).year} anos';
   bool get available => statusTecnico.toLowerCase() == 'ativo';
   double get rating => 4.5; // Valor padrão
-  String get address => 'CEP: $cep, Nº $numeroResidencia';
+  String get address => 'CEP: $cep, Nº $numeroResidencia${complemento.isNotEmpty ? ', $complemento' : ''}';
   List<String> get services => [especialidade];
   double get latitude => -23.5505; // Valor padrão São Paulo
   double get longitude => -46.6333; // Valor padrão São Paulo

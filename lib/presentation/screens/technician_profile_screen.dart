@@ -4,6 +4,7 @@ import '../../data/services/technician_service.dart';
 import '../../data/models/technician_model.dart';
 import '../../controllers/technician_controller.dart';
 import 'login_screen.dart';
+import 'technician_edit_profile_screen.dart';
 
 class TechnicianProfileScreen extends StatefulWidget {
   const TechnicianProfileScreen({super.key});
@@ -157,14 +158,14 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> {
                   Icons.person_outline,
                   'Editar Perfil',
                   'Alterar informações pessoais',
-                  () => _showEditProfileDialog(),
-                ),
-                Divider(height: 1),
-                _buildProfileOption(
-                  Icons.build_outlined,
-                  'Especialidades',
-                  'Gerenciar áreas de atuação',
-                  () => _showSpecialtiesDialog(),
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TechnicianEditProfileScreen(
+                        technician: _currentTechnician,
+                      ),
+                    ),
+                  ),
                 ),
                 Divider(height: 1),
                 _buildProfileOption(
@@ -172,13 +173,6 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> {
                   'Área de Atendimento',
                   'Definir raio de atendimento',
                   () => _showServiceAreaDialog(),
-                ),
-                Divider(height: 1),
-                _buildProfileOption(
-                  Icons.attach_money_outlined,
-                  'Preços dos Serviços',
-                  'Configurar valores',
-                  () => _showPricingDialog(),
                 ),
               ],
             ),
@@ -308,93 +302,9 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> {
     );
   }
 
-  void _showEditProfileDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Editar Perfil'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Nome',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 12),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Telefone',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 12),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Descrição',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 3,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancelar'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Perfil atualizado!')),
-              );
-            },
-            child: Text('Salvar'),
-          ),
-        ],
-      ),
-    );
-  }
 
-  void _showSpecialtiesDialog() {
-    final List<String> specialties = [
-      'Hardware',
-      'Software',
-      'Redes',
-      'Formatação',
-      'Recuperação de Dados',
-      'Montagem de PC',
-    ];
 
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Especialidades'),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: specialties.map((specialty) {
-              return CheckboxListTile(
-                title: Text(specialty),
-                value: true,
-                onChanged: (value) {},
-                activeColor: AppColors.primaryPurple,
-              );
-            }).toList(),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Fechar'),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   void _showServiceAreaDialog() {
     showDialog(
@@ -431,47 +341,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> {
     );
   }
 
-  void _showPricingDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Preços dos Serviços'),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Formatação',
-                  prefixText: 'R\$ ',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 12),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Reparo de Hardware',
-                  prefixText: 'R\$ ',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancelar'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Salvar'),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   void _showHelpDialog() {
     showDialog(
