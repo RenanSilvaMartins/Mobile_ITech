@@ -3,6 +3,7 @@ import '../../core/constants/app_colors.dart';
 import '../../data/models/agendamento_model.dart';
 import '../../data/models/service_model.dart';
 import '../../data/services/agendamento_service.dart';
+import '../../controllers/service_controller.dart';
 
 class ServiceRequestScreen extends StatefulWidget {
   final Map<String, dynamic> technician;
@@ -22,14 +23,8 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
 
-  final List<Map<String, dynamic>> services = [
-    {'name': 'Reparo de Tela', 'price': 150.0, 'duration': '2-3h'},
-    {'name': 'Troca de Bateria', 'price': 120.0, 'duration': '1h'},
-    {'name': 'Formatação', 'price': 80.0, 'duration': '1-2h'},
-    {'name': 'Limpeza Interna', 'price': 60.0, 'duration': '1h'},
-    {'name': 'Recuperação de Dados', 'price': 200.0, 'duration': '2-4h'},
-    {'name': 'Instalação de Software', 'price': 40.0, 'duration': '30min'},
-  ];
+  List<ServiceModel> services = [];
+  bool _isLoadingServices = true;
 
   final List<Map<String, String>> urgencyLevels = [
     {'level': 'Normal', 'description': 'Até 2 dias úteis', 'extra': '0'},
@@ -40,18 +35,33 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
   double get totalPrice {
     if (selectedService == null || selectedUrgency == null) return 0;
     
-    final service = services.firstWhere((s) => s['name'] == selectedService);
+    final service = services.firstWhere((s) => s.name == selectedService);
     final urgency = urgencyLevels.firstWhere((u) => u['level'] == selectedUrgency);
     
-    return service['price'] + double.parse(urgency['extra']!);
+    return service.price + double.parse(urgency['extra']!);
   }
 
   @override
   void initState() {
     super.initState();
+    _loadServices();
     // Se há um serviço pré-selecionado, define ele como selecionado
     if (widget.selectedService != null) {
       selectedService = widget.selectedService!.name;
+    }
+  }
+
+  Future<void> _loadServices() async {
+    try {
+      final loadedServices = await ServiceController.getAllServices();
+      setState(() {
+        services = loadedServices;
+        _isLoadingServices = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingServices = false;
+      });
     }
   }
 
@@ -172,14 +182,17 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
               ],
             ),
             SizedBox(height: 12),
-            ...services.map((service) => _ServiceOption(
-              name: service['name'],
-              price: service['price'],
-              duration: service['duration'],
-              isSelected: selectedService == service['name'],
-              onTap: () => setState(() => selectedService = service['name']),
-              isPreSelected: widget.selectedService?.name == service['name'],
-            )),
+            if (_isLoadingServices)
+              Center(child: CircularProgressIndicator())
+            else
+              ...services.map((service) => _ServiceOption(
+                name: service.name,
+                price: service.price,
+                duration: service.duration,
+                isSelected: selectedService == service.name,
+                onTap: () => setState(() => selectedService = service.name),
+                isPreSelected: widget.selectedService?.name == service.name,
+              )),
             SizedBox(height: 24),
 
             // Nível de urgência
@@ -370,13 +383,17 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
 
   void _proceedToPayment() async {
     try {
+      // Debug: verificar ID do técnico
+      print('ID do técnico: ${widget.technician['id']}');
+      print('Técnico completo: ${widget.technician}');
+      
       // Criar agendamento
       final agendamento = AgendamentoModel(
         usuarioId: '1', // Substituir pelo ID do usuário logado
-        tecnicoId: widget.technician['id']?.toString() ?? '1',
+        tecnicoId: '1',
         servico: selectedService!,
         descricao: _descriptionController.text,
-        endereco: _addressController.text,
+        endereco: '',
         dataAgendamento: selectedDate!,
         horario: '${selectedTime!.hour.toString().padLeft(2, '0')}:${selectedTime!.minute.toString().padLeft(2, '0')}',
         urgencia: selectedUrgency!,
@@ -392,6 +409,9 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
         ),
       );
 
+      // Log do JSON que será enviado
+      print('JSON enviado: ${agendamento.toJson()}');
+      
       // Criar agendamento na API
       await AgendamentoService.criar(agendamento);
       
@@ -409,6 +429,9 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
       // Voltar para tela anterior
       Navigator.pop(context);
     } catch (e) {
+      // Log detalhado do erro
+      print('ERRO DETALHADO: $e');
+      
       // Fechar loading se estiver aberto
       if (Navigator.canPop(context)) Navigator.pop(context);
       

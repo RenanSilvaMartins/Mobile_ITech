@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import 'service_request_screen.dart';
-import 'technicians_map_screen.dart';
 
 class TechnicianDetailScreen extends StatefulWidget {
   final Map<String, dynamic> technician;
@@ -42,7 +41,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Ti
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -151,7 +150,6 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Ti
                 tabs: [
                   Tab(text: 'Sobre'),
                   Tab(text: 'Avaliações'),
-                  Tab(text: 'Localização'),
                 ],
               ),
             ),
@@ -162,7 +160,6 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Ti
               children: [
                 _buildAboutTab(),
                 _buildReviewsTab(),
-                _buildLocationTab(),
               ],
             ),
           ),
@@ -406,79 +403,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Ti
     );
   }
 
-  Widget _buildLocationTab() {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.map, size: 64, color: Colors.grey[600]),
-                  SizedBox(height: 8),
-                  Text(
-                    'Mapa de Localização',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    'Região: Centro/Zona Sul',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
-          _InfoCard(
-            title: 'Área de Atendimento',
-            content: 'Centro, Zona Sul, Zona Oeste\nRaio de 15km do centro da cidade',
-            icon: Icons.location_on,
-          ),
-          SizedBox(height: 16),
-          _InfoCard(
-            title: 'Tempo de Deslocamento',
-            content: 'Média de 30-45 minutos para chegar ao local',
-            icon: Icons.access_time,
-          ),
-          SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TechniciansMapScreen(),
-                ),
-              );
-            },
-            icon: Icon(Icons.map),
-            label: Text('Ver Mapa Completo'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryPurple,
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+
 }
 
 class _InfoCard extends StatelessWidget {

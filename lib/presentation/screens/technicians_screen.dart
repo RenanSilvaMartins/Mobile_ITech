@@ -83,6 +83,7 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
 
   Map<String, dynamic> _technicianToMap(TechnicianModel tech) {
     return {
+      'id': tech.id,
       'name': tech.name,
       'specialty': tech.especialidade,
       'rating': tech.rating,
@@ -410,6 +411,7 @@ class _TechnicianCard extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => ServiceRequestScreen(
                           technician: {
+                            'id': technician.id,
                             'name': technician.name,
                             'specialty': technician.specialty,
                             'rating': technician.rating,

@@ -6,7 +6,8 @@ import 'services_screen.dart';
 import 'service_history_screen.dart';
 import 'agendamentos_screen.dart';
 import '../../data/services/user_service.dart';
-import '../../data/services/service_request_service.dart';
+import '../../data/services/agendamento_service.dart';
+import '../../data/models/agendamento_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -91,6 +92,8 @@ class HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<HomeContent> {
   final TextEditingController _searchController = TextEditingController();
+  List<AgendamentoModel> _recentServices = [];
+  bool _isLoadingServices = true;
   
   void _navigateToServices(String category) {
     final homeState = context.findAncestorStateOfType<_HomeScreenState>();
@@ -101,6 +104,26 @@ class _HomeContentState extends State<HomeContent> {
     }
   }
   
+  @override
+  void initState() {
+    super.initState();
+    _loadRecentServices();
+  }
+
+  Future<void> _loadRecentServices() async {
+    try {
+      final services = await AgendamentoService.listarTodos();
+      setState(() {
+        _recentServices = services.take(2).toList();
+        _isLoadingServices = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingServices = false;
+      });
+    }
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -364,15 +387,25 @@ class _HomeContentState extends State<HomeContent> {
                       ],
                     ),
                     SizedBox(height: 16),
-                    ...ServiceRequestService.getAllServiceRequests().take(2).map((service) => 
-                      _ServiceCard(
-                        title: service.service,
-                        technician: service.technicianName,
-                        status: service.status,
-                        date: '${service.date.day}/${service.date.month}/${service.date.year}',
-                        statusColor: service.status == 'Concluído' ? Colors.green : Colors.orange,
+                    if (_isLoadingServices)
+                      Center(child: CircularProgressIndicator())
+                    else if (_recentServices.isEmpty)
+                      Center(
+                        child: Text(
+                          'Nenhum agendamento encontrado',
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                      )
+                    else
+                      ..._recentServices.map((service) => 
+                        _ServiceCard(
+                          title: service.servico,
+                          technician: 'Técnico ${service.tecnicoId}',
+                          status: service.status,
+                          date: '${service.dataAgendamento.day}/${service.dataAgendamento.month}/${service.dataAgendamento.year}',
+                          statusColor: service.status == 'Concluído' ? Colors.green : Colors.orange,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),

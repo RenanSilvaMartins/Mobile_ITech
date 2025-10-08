@@ -32,33 +32,33 @@ class AgendamentoModel {
   factory AgendamentoModel.fromJson(Map<String, dynamic> json) {
     return AgendamentoModel(
       id: json['id']?.toString(),
-      usuarioId: json['usuarioId']?.toString() ?? '',
-      tecnicoId: json['tecnicoId']?.toString() ?? '',
-      servico: json['servico'] ?? '',
-      descricao: json['descricao'] ?? '',
-      endereco: json['endereco'] ?? '',
-      dataAgendamento: DateTime.parse(json['dataAgendamento']),
-      horario: json['horario'] ?? '',
-      urgencia: json['urgencia'] ?? '',
-      preco: (json['preco'] ?? 0).toDouble(),
-      status: json['status'] ?? 'Pendente',
-      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
-      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      usuarioId: json['usuarioId']?.toString() ?? json['usuario_id']?.toString() ?? '',
+      tecnicoId: json['tecnicoId']?.toString() ?? json['tecnico_id']?.toString() ?? '',
+      servico: json['servico']?.toString() ?? '',
+      descricao: json['descricao']?.toString() ?? '',
+      endereco: json['endereco']?.toString() ?? '',
+      dataAgendamento: DateTime.parse(json['dataAgendamento']?.toString() ?? DateTime.now().toIso8601String()),
+      horario: json['horario']?.toString() ?? json['horaAgendamento']?.toString() ?? '',
+      urgencia: json['urgencia']?.toString() ?? '',
+      preco: double.tryParse(json['preco']?.toString() ?? '0') ?? 0.0,
+      status: json['status']?.toString() ?? json['situacao']?.toString() ?? 'Pendente',
+      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt'].toString()) : null,
+      updatedAt: json['updatedAt'] != null ? DateTime.tryParse(json['updatedAt'].toString()) : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'usuarioId': int.parse(usuarioId),
-      'tecnicoId': int.parse(tecnicoId),
-      'servico': servico,
-      'descricao': descricao,
-      'endereco': endereco,
+      'horaAgendamento': horario,
       'dataAgendamento': dataAgendamento.toIso8601String().split('T')[0],
-      'horario': horario,
-      'urgencia': urgencia,
+      'tecnicoId': int.parse(tecnicoId),
+      'servicoId': 1, // ID fixo do serviço
+      'clienteId': 1, // ID fixo do cliente
+      'usuarioId': int.parse(usuarioId),
+      'descricao': descricao,
+      'urgencia': urgencia.toLowerCase(),
+      'situacao': 'ATIVO',
       'preco': preco,
-      'status': status,
     };
   }
 }

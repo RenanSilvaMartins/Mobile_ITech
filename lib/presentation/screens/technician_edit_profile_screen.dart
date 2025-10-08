@@ -252,22 +252,22 @@ class _TechnicianEditProfileScreenState extends State<TechnicianEditProfileScree
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(context),
-                      child: Text('Cancelar'),
                       style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 12),
                       ),
+                      child: Text('Cancelar'),
                     ),
                   ),
                   SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _saveProfile,
-                      child: Text('Salvar Alterações'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryPurple,
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(vertical: 12),
                       ),
+                      child: Text('Salvar Alterações'),
                     ),
                   ),
                 ],
