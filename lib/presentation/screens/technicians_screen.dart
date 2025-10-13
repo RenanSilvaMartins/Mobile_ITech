@@ -26,6 +26,14 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
   List<TechnicianModel> get _filteredTechnicians {
     List<TechnicianModel> filtered = _allTechnicians;
     
+    // Filtra por especialidade do serviço selecionado
+    if (widget.selectedService != null) {
+      final serviceType = widget.selectedService!.tipo.toLowerCase();
+      filtered = filtered.where((tech) => 
+        tech.available && tech.especialidade.toLowerCase().contains(serviceType)
+      ).toList();
+    }
+    
     if (_selectedFilter != 'Todos') {
       if (_selectedFilter == 'Disponíveis') {
         filtered = filtered.where((tech) => tech.available == true).toList();
@@ -357,26 +365,22 @@ class _TechnicianCard extends StatelessWidget {
                     color: AppColors.textSecondary,
                   ),
                 ),
+                Text(
+                  'CEP: ${technician.cep}',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textTertiary,
+                  ),
+                ),
                 SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(Icons.star, color: Colors.amber, size: 16),
+                    Icon(Icons.location_on, color: AppColors.textTertiary, size: 14),
                     SizedBox(width: 4),
                     Text(
-                      technician.rating.toString(),
+                      technician.region,
                       style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    SizedBox(width: 16),
-                    Icon(Icons.work, color: AppColors.textTertiary, size: 16),
-                    SizedBox(width: 4),
-                    Text(
-                      technician.experience,
-                      style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: AppColors.textSecondary,
                       ),
                     ),

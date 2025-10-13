@@ -45,6 +45,22 @@ class TechnicianModel {
   double get longitude => -46.6333; // Valor padrão São Paulo
   List<ReviewModel> get reviews => [];
   int get completedServices => 0;
+  
+  String get region {
+    final cepPrefix = cep.length >= 5 ? cep.substring(0, 5) : cep;
+    switch (cepPrefix) {
+      case '01000': case '01001': case '01002': case '01003': case '01004': case '01005':
+        return 'Centro - SP';
+      case '04000': case '04001': case '04002': case '04003': case '04004': case '04005':
+        return 'Vila Olímpia - SP';
+      case '05000': case '05001': case '05002': case '05003': case '05004': case '05005':
+        return 'Lapa - SP';
+      case '08000': case '08001': case '08002': case '08003': case '08004': case '08005':
+        return 'Itaquera - SP';
+      default:
+        return 'São Paulo - SP';
+    }
+  }
 
   factory TechnicianModel.fromJson(Map<String, dynamic> json) {
     return TechnicianModel(

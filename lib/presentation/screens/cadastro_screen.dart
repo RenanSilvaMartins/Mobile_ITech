@@ -156,7 +156,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                                 _isTechnician = value;
                               });
                             },
-                            activeColor: AppColors.primaryPurple,
+                            activeThumbColor: AppColors.primaryPurple,
                           ),
                         ],
                       ),

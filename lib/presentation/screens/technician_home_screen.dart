@@ -43,7 +43,7 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
                       _isOnline = value;
                     });
                   },
-                  activeColor: Colors.green,
+                  activeThumbColor: Colors.green,
                 ),
               ],
             ),

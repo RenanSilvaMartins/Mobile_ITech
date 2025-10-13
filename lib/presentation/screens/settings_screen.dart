@@ -29,7 +29,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               subtitle: Text('Ativar tema escuro'),
               value: _darkMode,
               onChanged: (value) => setState(() => _darkMode = value),
-              activeColor: AppColors.primaryPurple,
+              activeThumbColor: AppColors.primaryPurple,
             ),
           ),
           Card(

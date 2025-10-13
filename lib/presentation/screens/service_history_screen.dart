@@ -19,8 +19,8 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> with Ticker
   
   List<AgendamentoModel> services = [];
   bool _isLoading = true;
-  Map<String, String> _technicianNames = {};
-  Map<String, String> _serviceNames = {};
+  final Map<String, String> _technicianNames = {};
+  final Map<String, String> _serviceNames = {};
 
   @override
   void initState() {

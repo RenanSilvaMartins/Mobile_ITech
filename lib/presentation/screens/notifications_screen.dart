@@ -30,7 +30,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               subtitle: Text('Receber notificações no dispositivo'),
               value: _pushNotifications,
               onChanged: (value) => setState(() => _pushNotifications = value),
-              activeColor: AppColors.primaryPurple,
+              activeThumbColor: AppColors.primaryPurple,
             ),
           ),
           Card(
@@ -39,7 +39,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               subtitle: Text('Receber atualizações por email'),
               value: _emailNotifications,
               onChanged: (value) => setState(() => _emailNotifications = value),
-              activeColor: AppColors.primaryPurple,
+              activeThumbColor: AppColors.primaryPurple,
             ),
           ),
           Card(
@@ -48,7 +48,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               subtitle: Text('Receber SMS sobre serviços'),
               value: _smsNotifications,
               onChanged: (value) => setState(() => _smsNotifications = value),
-              activeColor: AppColors.primaryPurple,
+              activeThumbColor: AppColors.primaryPurple,
             ),
           ),
         ],

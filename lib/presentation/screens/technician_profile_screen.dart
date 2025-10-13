@@ -141,7 +141,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> {
                             _isAvailable = value;
                           });
                         },
-                        activeColor: AppColors.primaryPurple,
+                        activeThumbColor: AppColors.primaryPurple,
                       ),
                     ],
                   ),
@@ -198,7 +198,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> {
                         _notificationsEnabled = value;
                       });
                     },
-                    activeColor: AppColors.primaryPurple,
+                    activeThumbColor: AppColors.primaryPurple,
                   ),
                 ),
                 Divider(height: 1),

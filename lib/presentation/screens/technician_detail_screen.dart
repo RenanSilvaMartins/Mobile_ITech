@@ -13,35 +13,11 @@ class TechnicianDetailScreen extends StatefulWidget {
 
 class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with TickerProviderStateMixin {
   late TabController _tabController;
-  
-  final List<Map<String, dynamic>> reviews = [
-    {
-      'name': 'Pedro Lima',
-      'rating': 5.0,
-      'comment': 'Excelente profissional! Resolveu meu problema rapidamente.',
-      'date': '15/12/2023',
-      'service': 'Reparo de tela'
-    },
-    {
-      'name': 'Julia Mendes',
-      'rating': 4.5,
-      'comment': 'Muito atencioso e competente. Recomendo!',
-      'date': '10/12/2023',
-      'service': 'Troca de bateria'
-    },
-    {
-      'name': 'Roberto Silva',
-      'rating': 5.0,
-      'comment': 'Trabalho impecável, preço justo.',
-      'date': '05/12/2023',
-      'service': 'Formatação'
-    },
-  ];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 1, vsync: this);
   }
 
   @override
@@ -112,17 +88,6 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Ti
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.star, color: Colors.amber, size: 20),
-                        SizedBox(width: 4),
-                        Text(
-                          widget.technician['rating'].toString(),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(width: 16),
                         Icon(Icons.work, color: Colors.white.withOpacity(0.8), size: 20),
                         SizedBox(width: 4),
                         Text(
@@ -149,7 +114,6 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Ti
                 indicatorColor: AppColors.primaryPurple,
                 tabs: [
                   Tab(text: 'Sobre'),
-                  Tab(text: 'Avaliações'),
                 ],
               ),
             ),
@@ -159,7 +123,6 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Ti
               controller: _tabController,
               children: [
                 _buildAboutTab(),
-                _buildReviewsTab(),
               ],
             ),
           ),
@@ -232,178 +195,32 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Ti
             content: widget.technician['available'] ? 'Disponível agora' : 'Ocupado no momento',
             icon: widget.technician['available'] ? Icons.check : Icons.schedule,
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildReviewsTab() {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      widget.technician['rating'].toString(),
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.primaryPurple,
-                      ),
-                    ),
-                    Row(
-                      children: List.generate(5, (index) {
-                        return Icon(
-                          index < widget.technician['rating'].floor() ? Icons.star : Icons.star_border,
-                          color: Colors.amber,
-                          size: 20,
-                        );
-                      }),
-                    ),
-                    Text(
-                      '${reviews.length} avaliações',
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                  ],
-                ),
-                SizedBox(width: 24),
-                Expanded(
-                  child: Column(
-                    children: List.generate(5, (index) {
-                      int count = reviews.where((r) => r['rating'].floor() == (5 - index)).length;
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 2),
-                        child: Row(
-                          children: [
-                            Text('${5 - index}'),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: LinearProgressIndicator(
-                                value: count / reviews.length,
-                                backgroundColor: Colors.grey[300],
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Text('$count'),
-                          ],
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-              ],
-            ),
+          SizedBox(height: 16),
+          _InfoCard(
+            title: 'Região de Atendimento',
+            content: _getRegionFromTechnician(),
+            icon: Icons.map,
           ),
-          SizedBox(height: 20),
-          ...reviews.map((review) => Container(
-            margin: EdgeInsets.only(bottom: 16),
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: AppColors.primaryPurple.withOpacity(0.1),
-                      child: Text(
-                        review['name'][0],
-                        style: TextStyle(
-                          color: AppColors.primaryPurple,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            review['name'],
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(
-                            review['service'],
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Row(
-                          children: List.generate(5, (i) {
-                            return Icon(
-                              i < review['rating'].floor() ? Icons.star : Icons.star_border,
-                              color: Colors.amber,
-                              size: 16,
-                            );
-                          }),
-                        ),
-                        Text(
-                          review['date'],
-                          style: TextStyle(
-                            color: Colors.grey[500],
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12),
-                Text(
-                  review['comment'],
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[700],
-                  ),
-                ),
-              ],
-            ),
-          )),
         ],
       ),
     );
   }
 
-
+  String _getRegionFromTechnician() {
+    final techId = widget.technician['id'] ?? 0;
+    switch (techId % 5) {
+      case 0:
+        return 'Zona Sul - SP';
+      case 1:
+        return 'Zona Norte - SP';
+      case 2:
+        return 'Zona Leste - SP';
+      case 3:
+        return 'Zona Oeste - SP';
+      default:
+        return 'Centro - SP';
+    }
+  }
 }
 
 class _InfoCard extends StatelessWidget {
@@ -420,15 +237,15 @@ class _InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
-            offset: Offset(0, 2),
+            offset: Offset(0, 5),
           ),
         ],
       ),
@@ -440,7 +257,11 @@ class _InfoCard extends StatelessWidget {
               color: AppColors.primaryPurple.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: AppColors.primaryPurple),
+            child: Icon(
+              icon,
+              color: AppColors.primaryPurple,
+              size: 24,
+            ),
           ),
           SizedBox(width: 16),
           Expanded(

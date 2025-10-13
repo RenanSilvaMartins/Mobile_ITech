@@ -192,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       _isTechnician = value;
                                     });
                                   },
-                                  activeColor: AppColors.primaryPurple,
+                                  activeThumbColor: AppColors.primaryPurple,
                                 ),
                               ],
                             ),
