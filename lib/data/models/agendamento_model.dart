@@ -3,6 +3,8 @@ class AgendamentoModel {
   final String usuarioId;
   final String tecnicoId;
   final String servico;
+  final String? servicoId;
+  final String? servicoTipo;
   final String descricao;
   final String endereco;
   final DateTime dataAgendamento;
@@ -18,6 +20,8 @@ class AgendamentoModel {
     required this.usuarioId,
     required this.tecnicoId,
     required this.servico,
+    this.servicoId,
+    this.servicoTipo,
     required this.descricao,
     required this.endereco,
     required this.dataAgendamento,
@@ -35,6 +39,8 @@ class AgendamentoModel {
       usuarioId: json['usuarioId']?.toString() ?? json['usuario_id']?.toString() ?? '',
       tecnicoId: json['tecnicoId']?.toString() ?? json['tecnico_id']?.toString() ?? '',
       servico: json['servico']?.toString() ?? '',
+      servicoId: json['servicoId']?.toString() ?? json['servico_id']?.toString(),
+      servicoTipo: json['servicoTipo']?.toString(),
       descricao: json['descricao']?.toString() ?? '',
       endereco: json['endereco']?.toString() ?? '',
       dataAgendamento: DateTime.parse(json['dataAgendamento']?.toString() ?? DateTime.now().toIso8601String()),
@@ -52,7 +58,7 @@ class AgendamentoModel {
       'horaAgendamento': horario,
       'dataAgendamento': dataAgendamento.toIso8601String().split('T')[0],
       'tecnicoId': int.parse(tecnicoId),
-      'servicoId': 1, // ID fixo do serviço
+      'servicoId': servicoId != null ? int.parse(servicoId!) : 1,
       'clienteId': 1, // ID fixo do cliente
       'usuarioId': int.parse(usuarioId),
       'descricao': descricao,

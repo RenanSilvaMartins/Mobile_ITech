@@ -150,18 +150,6 @@ class _ServicesScreenState extends State<ServicesScreen> {
                   _CategoryChip('Todos', _selectedCategory == 'Todos', (selected) {
                     setState(() { _selectedCategory = 'Todos'; });
                   }),
-                  _CategoryChip('Smartphone', _selectedCategory == 'Smartphone', (selected) {
-                    setState(() { _selectedCategory = 'Smartphone'; });
-                  }),
-                  _CategoryChip('Notebook', _selectedCategory == 'Notebook', (selected) {
-                    setState(() { _selectedCategory = 'Notebook'; });
-                  }),
-                  _CategoryChip('Desktop', _selectedCategory == 'Desktop', (selected) {
-                    setState(() { _selectedCategory = 'Desktop'; });
-                  }),
-                  _CategoryChip('Geral', _selectedCategory == 'Geral', (selected) {
-                    setState(() { _selectedCategory = 'Geral'; });
-                  }),
                 ],
               ),
             ),

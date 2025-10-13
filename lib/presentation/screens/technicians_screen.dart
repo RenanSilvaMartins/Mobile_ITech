@@ -173,15 +173,6 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
                   _FilterChip('Todos', _selectedFilter == 'Todos', (selected) {
                     setState(() { _selectedFilter = 'Todos'; });
                   }),
-                  _FilterChip('Disponíveis', _selectedFilter == 'Disponíveis', (selected) {
-                    setState(() { _selectedFilter = 'Disponíveis'; });
-                  }),
-                  _FilterChip('Smartphones', _selectedFilter == 'Smartphones', (selected) {
-                    setState(() { _selectedFilter = 'Smartphones'; });
-                  }),
-                  _FilterChip('Notebooks', _selectedFilter == 'Notebooks', (selected) {
-                    setState(() { _selectedFilter = 'Notebooks'; });
-                  }),
                 ],
               ),
             ),

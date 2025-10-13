@@ -21,6 +21,7 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> with Ticker
   bool _isLoading = true;
   final Map<String, String> _technicianNames = {};
   final Map<String, String> _serviceNames = {};
+  final Map<String, String> _serviceTypes = {};
 
   @override
   void initState() {
@@ -113,6 +114,7 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> with Ticker
       final servicesList = await ServiceController.getAllServices();
       for (var service in servicesList) {
         _serviceNames[service.id.toString()] = service.name;
+        _serviceTypes[service.id.toString()] = service.tipo;
       }
     } catch (e) {
       print('Erro ao carregar nomes dos serviços: $e');
@@ -208,8 +210,8 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> with Ticker
                                       status: service.status,
                                       price: 'R\$ ${service.preco.toStringAsFixed(2)}',
                                       technician: _technicianNames[service.tecnicoId] ?? 'Técnico ${service.tecnicoId}',
-                                      description: _serviceNames['1'] ?? service.servico,
-                                      icon: _getServiceIcon(_serviceNames['1'] ?? service.servico),
+                                      description: service.servicoTipo ?? '',
+                                      icon: _getServiceIcon(_serviceNames[service.servicoId ?? ''] ?? service.servico),
                                     ),
                                   ),
                                 );

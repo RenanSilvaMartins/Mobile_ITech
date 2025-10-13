@@ -65,6 +65,22 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
     }
   }
 
+  String _getRegionFromTechnician() {
+    final techId = widget.technician['id'] ?? 0;
+    switch (techId % 5) {
+      case 0:
+        return 'Zona Sul - SP';
+      case 1:
+        return 'Zona Norte - SP';
+      case 2:
+        return 'Zona Leste - SP';
+      case 3:
+        return 'Zona Oeste - SP';
+      default:
+        return 'Centro - SP';
+    }
+  }
+
   @override
   void dispose() {
     _descriptionController.dispose();
@@ -134,11 +150,14 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
                         ),
                         Row(
                           children: [
-                            Icon(Icons.star, color: Colors.amber, size: 16),
+                            Icon(Icons.location_on, color: AppColors.primaryPurple, size: 16),
                             SizedBox(width: 4),
                             Text(
-                              widget.technician['rating'].toString(),
-                              style: TextStyle(fontWeight: FontWeight.w500),
+                              _getRegionFromTechnician(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.primaryPurple,
+                              ),
                             ),
                           ],
                         ),
@@ -387,13 +406,17 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
       print('ID do técnico: ${widget.technician['id']}');
       print('Técnico completo: ${widget.technician}');
       
+      // Obter o serviço selecionado
+      final selectedServiceModel = services.firstWhere((s) => s.name == selectedService);
+      
       // Criar agendamento
       final agendamento = AgendamentoModel(
         usuarioId: '1', // Substituir pelo ID do usuário logado
-        tecnicoId: '1',
+        tecnicoId: widget.technician['id'].toString(),
         servico: selectedService!,
+        servicoId: selectedServiceModel.id.toString(),
         descricao: _descriptionController.text,
-        endereco: '',
+        endereco: _addressController.text,
         dataAgendamento: selectedDate!,
         horario: '${selectedTime!.hour.toString().padLeft(2, '0')}:${selectedTime!.minute.toString().padLeft(2, '0')}',
         urgencia: selectedUrgency!,

@@ -296,7 +296,7 @@ class _AgendamentoCard extends StatelessWidget {
       child: ListTile(
         contentPadding: EdgeInsets.all(16),
         title: Text(
-          agendamento.servico,
+          agendamento.servicoTipo ?? agendamento.servico,
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 16,
@@ -442,7 +442,7 @@ class _DetalhesAgendamento extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-          _DetalheItem('Serviço', agendamento.servico),
+          _DetalheItem('Serviço', agendamento.servicoTipo ?? agendamento.servico),
           _DetalheItem('Data', '${agendamento.dataAgendamento.day}/${agendamento.dataAgendamento.month}/${agendamento.dataAgendamento.year}'),
           _DetalheItem('Horário', agendamento.horario),
           _DetalheItem('Endereço', agendamento.endereco),

@@ -351,7 +351,7 @@ class _HomeContentState extends State<HomeContent> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Serviços Recentes',
+                          'Agendamentos Recentes',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w700,
@@ -399,7 +399,7 @@ class _HomeContentState extends State<HomeContent> {
                     else
                       ..._recentServices.map((service) => 
                         _ServiceCard(
-                          title: service.servico,
+                          title: service.servicoTipo ?? service.servico,
                           technician: 'Técnico ${service.tecnicoId}',
                           status: service.status,
                           date: '${service.dataAgendamento.day}/${service.dataAgendamento.month}/${service.dataAgendamento.year}',

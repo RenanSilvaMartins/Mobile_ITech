@@ -217,8 +217,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // Menu Options
                     _MenuOption(
                       icon: Icons.history,
-                      title: 'Histórico de Serviços',
-                      subtitle: 'Ver todos os serviços solicitados',
+                      title: 'Histórico de Agendamentos',
+                      subtitle: 'Ver todos os agendamentos solicitados',
                       onTap: () {
                         Navigator.push(
                           context,
