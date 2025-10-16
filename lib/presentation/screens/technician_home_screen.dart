@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/theme_controller.dart';
 import '../../core/constants/app_colors.dart';
 import 'technician_requests_screen.dart';
 import 'technician_profile_screen.dart';
@@ -21,6 +22,8 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
       appBar: AppBar(
         title: Text('Área do Técnico'),

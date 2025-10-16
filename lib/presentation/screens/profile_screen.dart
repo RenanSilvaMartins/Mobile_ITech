@@ -39,8 +39,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.getBackground(isDark),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -152,7 +154,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
-                        color: Colors.grey[800],
+                        color: AppColors.getTextPrimary(isDark),
                       ),
                     ),
                     SizedBox(height: 16),
@@ -313,6 +315,8 @@ class _ProfileField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       child: Column(
@@ -323,14 +327,14 @@ class _ProfileField extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: Colors.grey[700],
+              color: AppColors.getTextSecondary(isDark),
             ),
           ),
           SizedBox(height: 8),
           Container(
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.getSurface(isDark),
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
@@ -384,6 +388,8 @@ class _MenuOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       margin: EdgeInsets.only(bottom: 12),
       child: ListTile(
@@ -406,22 +412,22 @@ class _MenuOption extends StatelessWidget {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: isLogout ? Colors.red : Colors.grey[800],
+            color: isLogout ? Colors.red : AppColors.getTextPrimary(isDark),
           ),
         ),
         subtitle: Text(
           subtitle,
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey[600],
+            color: AppColors.getTextSecondary(isDark),
           ),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
           size: 16,
-          color: Colors.grey[400],
+          color: AppColors.getTextTertiary(isDark),
         ),
-        tileColor: Colors.white,
+        tileColor: AppColors.getSurface(isDark),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),

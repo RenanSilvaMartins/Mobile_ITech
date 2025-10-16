@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/theme_controller.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/models/service_model.dart';
 import '../../data/models/technician_model.dart';
@@ -100,6 +101,10 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
       'image': tech.image.isNotEmpty ? tech.image : 'https://via.placeholder.com/150',
       'phone': tech.telefone,
       'description': tech.descricao,
+      'address': tech.address,
+      'cep': tech.cep,
+      'numeroResidencia': tech.numeroResidencia,
+      'complemento': tech.complemento,
     };
   }
 
@@ -111,13 +116,15 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.getBackground(isDark),
       appBar: AppBar(
         title: Text(
           'Técnicos Disponíveis',
           style: TextStyle(
-            color: Colors.white,
+            color: AppColors.getSurface(isDark),
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -133,7 +140,7 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: AppColors.surface,
+                color: AppColors.getSurface(isDark),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
@@ -145,7 +152,7 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.search, color: AppColors.textTertiary),
+                  Icon(Icons.search, color: AppColors.getTextTertiary(isDark)),
                   SizedBox(width: 12),
                   Expanded(
                     child: TextField(
@@ -192,7 +199,7 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
                                 'Erro ao carregar técnicos',
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: AppColors.textSecondary,
+                                  color: AppColors.getTextSecondary(isDark),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -209,13 +216,13 @@ class _TechniciansScreenState extends State<TechniciansScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.search_off, size: 64, color: AppColors.textTertiary),
+                                  Icon(Icons.search_off, size: 64, color: AppColors.getTextTertiary(isDark)),
                                   SizedBox(height: 16),
                                   Text(
                                     'Nenhum técnico encontrado',
                                     style: TextStyle(
                                       fontSize: 18,
-                                      color: AppColors.textSecondary,
+                                      color: AppColors.getTextSecondary(isDark),
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -271,6 +278,8 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       margin: EdgeInsets.only(right: 8),
       child: FilterChip(
@@ -295,11 +304,13 @@ class _TechnicianCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.getSurface(isDark),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -330,7 +341,7 @@ class _TechnicianCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.green,
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
+                      border: Border.all(color: AppColors.getSurface(isDark), width: 2),
                     ),
                   ),
                 ),
@@ -346,33 +357,33 @@ class _TechnicianCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: AppColors.getTextPrimary(isDark),
                   ),
                 ),
                 Text(
                   technician.specialty,
                   style: TextStyle(
                     fontSize: 14,
-                    color: AppColors.textSecondary,
+                    color: AppColors.getTextSecondary(isDark),
                   ),
                 ),
                 Text(
                   'CEP: ${technician.cep}',
                   style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.textTertiary,
+                    color: AppColors.getTextTertiary(isDark),
                   ),
                 ),
                 SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(Icons.location_on, color: AppColors.textTertiary, size: 14),
+                    Icon(Icons.location_on, color: AppColors.getTextTertiary(isDark), size: 14),
                     SizedBox(width: 4),
                     Text(
                       technician.region,
                       style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.textSecondary,
+                        color: AppColors.getTextSecondary(isDark),
                       ),
                     ),
                   ],
@@ -413,6 +424,10 @@ class _TechnicianCard extends StatelessWidget {
                             'experience': technician.experience,
                             'available': technician.available,
                             'image': technician.image,
+                            'address': technician.address,
+                            'cep': technician.cep,
+                            'numeroResidencia': technician.numeroResidencia,
+                            'complemento': technician.complemento,
                           },
                           selectedService: selectedService,
                         ),

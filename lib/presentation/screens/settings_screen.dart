@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/theme/theme_controller.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -9,7 +10,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _darkMode = false;
   String _language = 'Português';
 
   @override
@@ -27,8 +27,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: SwitchListTile(
               title: Text('Modo Escuro'),
               subtitle: Text('Ativar tema escuro'),
-              value: _darkMode,
-              onChanged: (value) => setState(() => _darkMode = value),
+              value: ThemeController().isDarkMode,
+              onChanged: (value) {
+                ThemeController().setDarkMode(value);
+                setState(() {});
+              },
               thumbColor: WidgetStateProperty.all(AppColors.primaryPurple),
             ),
           ),

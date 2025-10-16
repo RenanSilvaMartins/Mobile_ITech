@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/theme/theme_controller.dart';
 import 'technicians_screen.dart';
 import 'profile_screen.dart';
 import 'services_screen.dart';
@@ -132,8 +133,10 @@ class _HomeContentState extends State<HomeContent> {
   
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.getBackground(isDark),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -259,7 +262,7 @@ class _HomeContentState extends State<HomeContent> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: AppColors.getTextPrimary(isDark),
                       ),
                     ),
                     SizedBox(height: 16),
@@ -355,7 +358,7 @@ class _HomeContentState extends State<HomeContent> {
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
+                            color: AppColors.getTextPrimary(isDark),
                           ),
                         ),
                         TextButton(
@@ -463,6 +466,8 @@ class _QuickActionCardState extends State<_QuickActionCard> with SingleTickerPro
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return GestureDetector(
       onTapDown: (_) {
         setState(() => _isPressed = true);
@@ -485,7 +490,7 @@ class _QuickActionCardState extends State<_QuickActionCard> with SingleTickerPro
               duration: Duration(milliseconds: 200),
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                gradient: AppColors.cardGradient,
+                gradient: AppColors.getCardGradient(isDark),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
@@ -523,14 +528,14 @@ class _QuickActionCardState extends State<_QuickActionCard> with SingleTickerPro
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: AppColors.getTextPrimary(isDark),
                     ),
                   ),
                   Text(
                     widget.subtitle,
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.textSecondary,
+                      color: AppColors.getTextSecondary(isDark),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -592,6 +597,8 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -635,7 +642,7 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
               margin: EdgeInsets.only(bottom: 12),
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.getSurface(isDark),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
@@ -666,21 +673,21 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.grey[800],
+                            color: AppColors.getTextPrimary(isDark),
                           ),
                         ),
                         Text(
                           'Técnico: ${widget.technician}',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey[600],
+                            color: AppColors.getTextSecondary(isDark),
                           ),
                         ),
                         Text(
                           widget.date,
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey[500],
+                            color: AppColors.getTextTertiary(isDark),
                           ),
                         ),
                       ],

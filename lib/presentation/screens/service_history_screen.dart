@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/theme_controller.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/services/agendamento_service.dart';
 import '../../data/models/agendamento_model.dart';
@@ -146,21 +147,23 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> with Ticker
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.getBackground(isDark),
       appBar: AppBar(
         title: Text(
           'Histórico de Agendamentos',
           style: TextStyle(
             fontWeight: FontWeight.w700,
-            color: Colors.white,
+            color: AppColors.getSurface(isDark),
           ),
         ),
         backgroundColor: AppColors.primaryPurple,
         foregroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.getSurface(isDark)),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -183,7 +186,7 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> with Ticker
                       ? Center(
                           child: Text(
                             'Nenhum agendamento encontrado',
-                            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                            style: TextStyle(fontSize: 16, color: AppColors.getTextSecondary(isDark)),
                           ),
                         )
                       : ListView.builder(
@@ -292,6 +295,8 @@ class _ServiceHistoryCardState extends State<_ServiceHistoryCard> with SingleTic
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return GestureDetector(
       onTapDown: (_) {
         setState(() => _isHovered = true);
@@ -315,7 +320,7 @@ class _ServiceHistoryCardState extends State<_ServiceHistoryCard> with SingleTic
               margin: EdgeInsets.only(bottom: 16),
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.getSurface(isDark),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
@@ -350,7 +355,7 @@ class _ServiceHistoryCardState extends State<_ServiceHistoryCard> with SingleTic
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
-                            color: Colors.grey[800],
+                            color: AppColors.getTextPrimary(isDark),
                           ),
                         ),
                         SizedBox(height: 8),
@@ -377,13 +382,13 @@ class _ServiceHistoryCardState extends State<_ServiceHistoryCard> with SingleTic
                         SizedBox(height: 8),
                         Row(
                           children: [
-                            Icon(Icons.person, size: 16, color: Colors.grey[500]),
+                            Icon(Icons.person, size: 16, color: AppColors.getTextTertiary(isDark)),
                             SizedBox(width: 4),
                             Text(
                               widget.technician,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey[600],
+                                color: AppColors.getTextSecondary(isDark),
                               ),
                             ),
                           ],
@@ -391,13 +396,13 @@ class _ServiceHistoryCardState extends State<_ServiceHistoryCard> with SingleTic
                         SizedBox(height: 4),
                         Row(
                           children: [
-                            Icon(Icons.calendar_today, size: 16, color: Colors.grey[500]),
+                            Icon(Icons.calendar_today, size: 16, color: AppColors.getTextTertiary(isDark)),
                             SizedBox(width: 4),
                             Text(
                               widget.date,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey[600],
+                                color: AppColors.getTextSecondary(isDark),
                               ),
                             ),
                           ],

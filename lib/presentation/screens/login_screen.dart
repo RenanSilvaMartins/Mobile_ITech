@@ -71,8 +71,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.getBackground(isDark),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -105,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizedBox(height: 24),
                       Text(
-                        AppStrings.loginTitle,
+                        'Bem-vindo',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 32,
@@ -115,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        AppStrings.loginSubtitle,
+                        'Faça login para continuar',
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.9),
                           fontSize: 16,
@@ -136,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Container(
                       padding: EdgeInsets.all(32),
                       decoration: BoxDecoration(
-                        gradient: AppColors.cardGradient,
+                        gradient: AppColors.getCardGradient(isDark),
                         borderRadius: BorderRadius.circular(28),
                         boxShadow: [
                           BoxShadow(
@@ -157,9 +159,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           Container(
                             padding: EdgeInsets.all(20),
                             decoration: BoxDecoration(
-                              color: AppColors.background,
+                              color: AppColors.getBackground(isDark),
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: AppColors.divider),
+                              border: Border.all(color: AppColors.getDivider(isDark)),
                               boxShadow: [
                                 BoxShadow(
                                   color: AppColors.shadowColor,
@@ -181,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16,
-                                      color: AppColors.textPrimary,
+                                      color: AppColors.getTextPrimary(isDark),
                                     ),
                                   ),
                                 ),
@@ -199,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           SizedBox(height: 20),
                           ValidatedTextField(
-                            hintText: _emailController.text.isEmpty ? 'usuario@exemplo.com' : AppStrings.emailHint,
+                            hintText: _emailController.text.isEmpty ? 'usuario@exemplo.com' : 'Digite seu email',
                             keyboardType: TextInputType.emailAddress,
                             controller: _emailController,
                             isValid: _isValidEmail(_emailController.text),
@@ -208,7 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           SizedBox(height: 20),
                           ValidatedTextField(
-                            hintText: AppStrings.passwordHint,
+                            hintText: 'Digite sua senha',
                             obscureText: _obscurePassword,
                             controller: _passwordController,
                             isValid: _isValidPassword(_passwordController.text),
@@ -390,7 +392,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Text(
                                 'Lembrar credenciais',
                                 style: TextStyle(
-                                  color: AppColors.textSecondary,
+                                  color: AppColors.getTextSecondary(isDark),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -406,7 +408,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   );
                                 },
                                 child: Text(
-                                  AppStrings.forgotPassword,
+                                  'Esqueceu a senha?',
                                   style: TextStyle(
                                     color: AppColors.primaryPurple,
                                     fontWeight: FontWeight.w500,
@@ -417,7 +419,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           SizedBox(height: 32),
                           CustomButton(
-                            text: _isTechnician ? 'Entrar como Técnico' : AppStrings.loginButton,
+                            text: _isTechnician ? 'Entrar como Técnico' : 'Entrar',
                             icon: _isTechnician ? Icons.build : Icons.login,
                             onPressed: () async {
                               setState(() {
@@ -464,24 +466,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 24),
                     Row(
                       children: [
-                        Expanded(child: Divider(color: Colors.grey[300])),
+                        Expanded(child: Divider(color: AppColors.getDivider(isDark))),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
-                            AppStrings.orContinueWith,
+                            'ou continue com',
                             style: TextStyle(
-                              color: Colors.grey[600],
+                              color: AppColors.getTextSecondary(isDark),
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
-                        Expanded(child: Divider(color: Colors.grey[300])),
+                        Expanded(child: Divider(color: AppColors.getDivider(isDark))),
                       ],
                     ),
                     SizedBox(height: 24),
                     SocialLoginButton(
-                      text: AppStrings.continueWithGoogle,
+                      text: 'Continuar com Google',
                       logo: GoogleLogo(size: 20),
                       onPressed: () {
                         showDialog(
@@ -500,7 +502,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     SocialLoginButton(
-                      text: AppStrings.continueWithMicrosoft,
+                      text: 'Continuar com Microsoft',
                       logo: MicrosoftLogo(size: 24),
                       onPressed: () {
                         showDialog(

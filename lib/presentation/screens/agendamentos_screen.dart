@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/theme_controller.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/models/agendamento_model.dart';
 import '../../data/services/agendamento_service.dart';
@@ -53,13 +54,15 @@ class _AgendamentosScreenState extends State<AgendamentosScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.getBackground(isDark),
       appBar: AppBar(
         title: Text(
           'Meus Agendamentos',
           style: TextStyle(
-            color: Colors.white,
+            color: AppColors.getSurface(isDark),
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -123,14 +126,14 @@ class _AgendamentosScreenState extends State<AgendamentosScreen> {
                             Icon(
                               Icons.calendar_today,
                               size: 64,
-                              color: Colors.grey[400],
+                              color: AppColors.getTextTertiary(isDark),
                             ),
                             SizedBox(height: 16),
                             Text(
                               'Nenhum agendamento encontrado',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.grey[600],
+                                color: AppColors.getTextSecondary(isDark),
                               ),
                             ),
                           ],
@@ -225,6 +228,8 @@ class _FiltroChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -280,10 +285,12 @@ class _AgendamentoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       margin: EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.getSurface(isDark),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -308,7 +315,7 @@ class _AgendamentoCard extends StatelessWidget {
             SizedBox(height: 4),
             Text(
               '${agendamento.dataAgendamento.day}/${agendamento.dataAgendamento.month}/${agendamento.dataAgendamento.year} às ${agendamento.horario}',
-              style: TextStyle(color: Colors.grey[600]),
+              style: TextStyle(color: AppColors.getTextSecondary(isDark)),
             ),
             SizedBox(height: 4),
             Row(
@@ -413,9 +420,11 @@ class _DetalhesAgendamento extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.getSurface(isDark),
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       padding: EdgeInsets.all(20),
@@ -428,7 +437,7 @@ class _DetalhesAgendamento extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: AppColors.getDivider(isDark),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -466,7 +475,7 @@ class _DetalhesAgendamento extends StatelessWidget {
               child: Text(
                 'Fechar',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.getSurface(isDark),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -486,6 +495,8 @@ class _DetalheItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -497,7 +508,7 @@ class _DetalheItem extends StatelessWidget {
               '$label:',
               style: TextStyle(
                 fontWeight: FontWeight.w500,
-                color: Colors.grey[600],
+                color: AppColors.getTextSecondary(isDark),
               ),
             ),
           ),

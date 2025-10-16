@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/theme_controller.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../widgets/custom_text_field.dart';
@@ -44,13 +45,15 @@ class _CadastroScreenState extends State<CadastroScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.getBackground(isDark),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.grey[700]),
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.getTextSecondary(isDark)),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -77,20 +80,20 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       Container(
                         padding: EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.1),
+                          color: AppColors.getSurface(isDark).withOpacity(0.1),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Icon(
                           Icons.person_add_outlined,
                           size: 48,
-                          color: Colors.white,
+                          color: AppColors.getSurface(isDark),
                         ),
                       ),
                       SizedBox(height: 24),
                       Text(
                         AppStrings.cadastroTitle,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.getSurface(isDark),
                           fontSize: 32,
                           fontWeight: FontWeight.w700,
                           letterSpacing: -0.5,
@@ -100,7 +103,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       Text(
                         AppStrings.cadastroSubtitle,
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.9),
+                          color: AppColors.getSurface(isDark).withOpacity(0.9),
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
                         ),
@@ -113,7 +116,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
               Container(
                 padding: EdgeInsets.all(32),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.getSurface(isDark),
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
@@ -414,7 +417,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     Text(
                       'Já tem uma conta? ',
                       style: TextStyle(
-                        color: Colors.grey[600],
+                        color: AppColors.getTextSecondary(isDark),
                         fontSize: 14,
                       ),
                     ),

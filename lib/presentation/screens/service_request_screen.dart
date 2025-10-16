@@ -49,6 +49,40 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
     if (widget.selectedService != null) {
       selectedService = widget.selectedService!.name;
     }
+    // Preenche automaticamente o endereço do técnico
+    _populateTechnicianAddress();
+  }
+
+  void _populateTechnicianAddress() {
+    final technicianAddress = _getTechnicianAddress();
+    if (technicianAddress.isNotEmpty) {
+      _addressController.text = technicianAddress;
+    }
+  }
+
+  String _getTechnicianAddress() {
+    // Usa o endereço real do técnico se disponível
+    if (widget.technician['address'] != null && widget.technician['address'].toString().isNotEmpty) {
+      return widget.technician['address'].toString();
+    }
+    
+    // Constrói endereço a partir dos dados do técnico
+    final cep = widget.technician['cep']?.toString() ?? '';
+    final numero = widget.technician['numeroResidencia']?.toString() ?? '';
+    final complemento = widget.technician['complemento']?.toString() ?? '';
+    final region = _getRegionFromTechnician();
+    
+    if (cep.isNotEmpty && numero.isNotEmpty) {
+      String address = 'CEP: $cep, Nº $numero';
+      if (complemento.isNotEmpty) {
+        address += ', $complemento';
+      }
+      address += ' - $region';
+      return address;
+    }
+    
+    // Fallback para endereço genérico baseado na região
+    return 'Endereço na região: $region';
   }
 
   Future<void> _loadServices() async {
@@ -271,26 +305,59 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
             SizedBox(height: 24),
 
             // Endereço
-            Text(
-              'Endereço do Atendimento',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: Colors.grey[800],
-              ),
+            Row(
+              children: [
+                Text(
+                  'Endereço do Atendimento',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.grey[800],
+                  ),
+                ),
+                SizedBox(width: 8),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryGreen.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'Auto-preenchido',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.primaryGreen,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 12),
             TextField(
               controller: _addressController,
               decoration: InputDecoration(
-                hintText: 'Digite o endereço completo',
-                prefixIcon: Icon(Icons.location_on),
+                hintText: 'Endereço preenchido automaticamente do técnico',
+                prefixIcon: Icon(Icons.location_on, color: AppColors.primaryGreen),
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.refresh, color: AppColors.primaryPurple),
+                  onPressed: _populateTechnicianAddress,
+                  tooltip: 'Recarregar endereço do técnico',
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+                  borderSide: BorderSide(color: AppColors.primaryGreen.withOpacity(0.3)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.primaryGreen.withOpacity(0.3)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.primaryGreen, width: 2),
                 ),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: AppColors.primaryGreen.withOpacity(0.05),
               ),
               maxLines: 2,
             ),

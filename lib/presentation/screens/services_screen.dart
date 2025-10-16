@@ -88,8 +88,10 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.getBackground(isDark),
       appBar: AppBar(
         title: Text(
           'Nossos Serviços',
@@ -110,7 +112,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: AppColors.surface,
+                color: AppColors.getSurface(isDark),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
@@ -122,7 +124,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.search, color: AppColors.textTertiary),
+                  Icon(Icons.search, color: AppColors.getTextTertiary(isDark)),
                   SizedBox(width: 12),
                   Expanded(
                     child: TextField(
@@ -169,7 +171,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
                                 'Erro ao carregar serviços',
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: AppColors.textSecondary,
+                                  color: AppColors.getTextSecondary(isDark),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -186,13 +188,13 @@ class _ServicesScreenState extends State<ServicesScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.search_off, size: 64, color: AppColors.textTertiary),
+                                  Icon(Icons.search_off, size: 64, color: AppColors.getTextTertiary(isDark)),
                                   SizedBox(height: 16),
                                   Text(
                                     'Nenhum serviço encontrado',
                                     style: TextStyle(
                                       fontSize: 18,
-                                      color: AppColors.textSecondary,
+                                      color: AppColors.getTextSecondary(isDark),
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -369,6 +371,8 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {
@@ -377,7 +381,7 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
           child: AnimatedContainer(
             duration: Duration(milliseconds: 200),
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: AppColors.getSurface(isDark),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
@@ -428,7 +432,7 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                      color: AppColors.getTextPrimary(isDark),
                     ),
                   ),
                   SizedBox(height: 4),
@@ -436,7 +440,7 @@ class _ServiceCardState extends State<_ServiceCard> with SingleTickerProviderSta
                     widget.service.description ?? 'Serviço de ${widget.service.category}',
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.textSecondary,
+                      color: AppColors.getTextSecondary(isDark),
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
