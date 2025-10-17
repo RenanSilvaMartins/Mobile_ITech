@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'forgot_password_screen.dart';
 import 'home_screen.dart';
-import 'technician_home_screen.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../widgets/custom_text_field.dart';
@@ -11,7 +10,6 @@ import '../widgets/social_login_button.dart';
 import '../widgets/logo_widgets.dart';
 import '../../data/models/user_model.dart';
 import '../../data/services/user_service.dart';
-import '../../data/services/technician_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _showValidation = false;
   bool _obscurePassword = true;
-  bool _isTechnician = false;
+
   bool _rememberMe = false;
 
   @override
@@ -155,51 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: Column(
                         children: [
-                          // Toggle para escolher tipo de login
-                          Container(
-                            padding: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: AppColors.getBackground(isDark),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: AppColors.getDivider(isDark)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.shadowColor,
-                                  blurRadius: 8,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  _isTechnician ? Icons.build : Icons.person,
-                                  color: AppColors.primaryPurple,
-                                ),
-                                SizedBox(width: 12),
-                                Expanded(
-                                  child: Text(
-                                    _isTechnician ? 'Login como Técnico' : 'Login como Cliente',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                      color: AppColors.getTextPrimary(isDark),
-                                    ),
-                                  ),
-                                ),
-                                Switch(
-                                  value: _isTechnician,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _isTechnician = value;
-                                    });
-                                  },
-                                  thumbColor: WidgetStateProperty.all(AppColors.primaryPurple),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 20),
+
                           ValidatedTextField(
                             hintText: _emailController.text.isEmpty ? 'usuario@exemplo.com' : 'Digite seu email',
                             keyboardType: TextInputType.emailAddress,
@@ -419,44 +373,23 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           SizedBox(height: 32),
                           CustomButton(
-                            text: _isTechnician ? 'Entrar como Técnico' : 'Entrar',
-                            icon: _isTechnician ? Icons.build : Icons.login,
+                            text: 'Login',
+                            icon: Icons.login,
                             onPressed: () async {
                               setState(() {
                                 _showValidation = true;
                               });
                               if (_isValidEmail(_emailController.text) && _isValidPassword(_passwordController.text)) {
                                 await _saveCredentials();
-                                if (_isTechnician) {
-                                  // Login como técnico
-                                  final technician = TechnicianService().loginTechnician(
-                                    _emailController.text,
-                                    _passwordController.text,
-                                  );
-                                  if (technician != null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Login de técnico realizado com sucesso!'),
-                                        backgroundColor: Colors.green,
-                                      ),
-                                    );
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => TechnicianHomeScreen()),
-                                    );
-                                  }
-                                } else {
-                                  // Login como cliente
-                                  UserService().setCurrentUser(UserModel(
-                                    id: '1',
-                                    name: 'Cliente',
-                                    email: _emailController.text,
-                                  ));
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => HomeScreen()),
-                                  );
-                                }
+                                UserService().setCurrentUser(UserModel(
+                                  id: '1',
+                                  name: 'Cliente',
+                                  email: _emailController.text,
+                                ));
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                                );
                               }
                             },
                           ),

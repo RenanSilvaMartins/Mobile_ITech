@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/services/user_service.dart';
 import 'login_screen.dart';
@@ -19,13 +18,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
-  final _phoneController = TextEditingController();
-  final _addressController = TextEditingController();
-  
-  final _phoneMask = MaskTextInputFormatter(
-    mask: '(##) #####-####',
-    filter: {'#': RegExp(r'[0-9]')},
-  );
 
   @override
   void initState() {
@@ -33,8 +25,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final user = UserService().currentUser;
     _nameController = TextEditingController(text: user?.name ?? 'Cliente');
     _emailController = TextEditingController(text: user?.email ?? 'email@exemplo.com');
-    _phoneController.text = user?.phone ?? '';
-    _addressController.text = user?.address ?? '';
   }
 
   @override
@@ -82,46 +72,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                     SizedBox(height: 24),
-                    Stack(
-                      children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Colors.white.withOpacity(0.2),
-                          child: Icon(Icons.person, size: 60, color: Colors.white),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: GestureDetector(
-                            onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Funcionalidade de foto em desenvolvimento'),
-                                  backgroundColor: Colors.blue,
-                                ),
-                              );
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.2),
-                                    blurRadius: 5,
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.camera_alt,
-                                size: 20,
-                                color: AppColors.primaryPurple,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.white.withOpacity(0.2),
+                      child: Icon(Icons.person, size: 60, color: Colors.white),
                     ),
                     SizedBox(height: 16),
                     Text(
@@ -168,16 +122,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       controller: _emailController,
                       icon: Icons.email,
                     ),
-                    _ProfileField(
-                      label: 'Telefone',
-                      controller: _phoneController,
-                      icon: Icons.phone,
-                    ),
-                    _ProfileField(
-                      label: 'Endereço',
-                      controller: _addressController,
-                      icon: Icons.location_on,
-                    ),
                     SizedBox(height: 32),
                     // Action Buttons
                     SizedBox(
@@ -187,8 +131,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           UserService().updateUser(
                             name: _nameController.text,
                             email: _emailController.text,
-                            phone: _phoneController.text,
-                            address: _addressController.text,
                           );
                           setState(() {});
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -296,8 +238,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
-    _phoneController.dispose();
-    _addressController.dispose();
     super.dispose();
   }
 }
@@ -351,11 +291,9 @@ class _ProfileField extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     controller: controller,
-                    inputFormatters: label == 'Telefone' ? [MaskTextInputFormatter(mask: '(##) #####-####', filter: {'#': RegExp(r'[0-9]')})] : 
-                                   label == 'Nome Completo' ? [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'))] :
+                    inputFormatters: label == 'Nome Completo' ? [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'))] :
                                    label == 'Email' ? [FilteringTextInputFormatter.deny(RegExp(r'\s'))] : null,
-                    keyboardType: label == 'Telefone' ? TextInputType.phone :
-                                 label == 'Email' ? TextInputType.emailAddress : TextInputType.text,
+                    keyboardType: label == 'Email' ? TextInputType.emailAddress : TextInputType.text,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       isDense: true,
